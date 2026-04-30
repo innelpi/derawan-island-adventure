@@ -17,13 +17,51 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-secondary">
-      {/* Background image — pixel art beach */}
+      {/* Background image — pixel art beach (subtle sway untuk efek palem tertiup angin) */}
       <img
         src={titleBg}
         alt="Pulau Derawan pantai pixel art dengan penyu dan logo Derawan Island"
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity ${loaded ? "opacity-100" : "opacity-0"}`}
-        style={{ imageRendering: "pixelated" }}
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity bg-sway ${loaded ? "opacity-100" : "opacity-0"}`}
+        style={{ imageRendering: "pixelated", transformOrigin: "center bottom" }}
       />
+
+      {/* Overlay animasi — air berputar di belakang penyu + palem swaying */}
+      <div className="pointer-events-none absolute inset-0">
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1280 720"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+        >
+          {/* Posisi penyu di gambar referensi (~ 78%, 47%) */}
+          <defs>
+            <radialGradient id="waterRing" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+              <stop offset="60%" stopColor="rgba(173,232,255,0.55)" />
+              <stop offset="80%" stopColor="rgba(120,200,240,0.35)" />
+              <stop offset="100%" stopColor="rgba(120,200,240,0)" />
+            </radialGradient>
+          </defs>
+
+          {/* Cincin air berputar di belakang penyu */}
+          <g transform="translate(1000 340)" className="origin-center">
+            <g className="turtle-swirl">
+              <circle r="90" fill="url(#waterRing)" />
+              <ellipse cx="0" cy="0" rx="95" ry="22" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="3" />
+              <ellipse cx="0" cy="0" rx="70" ry="14" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" />
+            </g>
+            <g className="turtle-swirl-rev">
+              <ellipse cx="0" cy="0" rx="115" ry="28" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2" strokeDasharray="14 10" />
+            </g>
+            {/* Gelembung kecil */}
+            <circle cx="-40" cy="-70" r="4" fill="rgba(255,255,255,0.7)" className="bubble bubble-1" />
+            <circle cx="60" cy="-50" r="3" fill="rgba(255,255,255,0.6)" className="bubble bubble-2" />
+            <circle cx="20" cy="-90" r="5" fill="rgba(255,255,255,0.7)" className="bubble bubble-3" />
+            <circle cx="-60" cy="-30" r="3" fill="rgba(255,255,255,0.5)" className="bubble bubble-4" />
+          </g>
+        </svg>
+
+      </div>
 
       {/* Buttons positioned over the existing button area in the image */}
       <div className="relative z-10 flex h-full w-full flex-col items-center justify-end gap-3 pb-[6%] sm:pb-[8%]">
