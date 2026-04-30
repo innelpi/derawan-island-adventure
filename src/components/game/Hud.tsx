@@ -1,4 +1,4 @@
-import { GameState } from "@/game/types";
+import { GameState, STAGE_CONFIGS } from "@/game/types";
 
 interface HudProps {
   state: GameState;
@@ -67,7 +67,7 @@ export function Hud({ state }: HudProps) {
       {state.boss.active && !state.boss.defeated && (
         <div className="absolute inset-x-0 bottom-2 mx-auto flex max-w-lg flex-col items-center gap-1 px-4">
           <span className="font-pixel text-[10px] sm:text-xs text-destructive text-shadow-pixel">
-            LITTER KING
+            {STAGE_CONFIGS[state.stage].bossName}
           </span>
           <div className="h-5 w-full border-4 border-foreground bg-foreground/40">
             <div
