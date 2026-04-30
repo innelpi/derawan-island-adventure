@@ -1,15 +1,29 @@
+import type { StageId } from "@/game/types";
+
 interface EndScreenProps {
   variant: "win" | "lose";
+  stage?: StageId;
   onRestart: () => void;
   onMenu: () => void;
+  onNextStage?: () => void;
 }
 
-export function EndScreen({ variant, onRestart, onMenu }: EndScreenProps) {
-  if (variant === "win") return <WinScreen onRestart={onRestart} onMenu={onMenu} />;
+export function EndScreen({ variant, stage = 1, onRestart, onMenu, onNextStage }: EndScreenProps) {
+  if (variant === "win") return <WinScreen stage={stage} onRestart={onRestart} onMenu={onMenu} onNextStage={onNextStage} />;
   return <LoseScreen onRestart={onRestart} onMenu={onMenu} />;
 }
 
-function WinScreen({ onRestart, onMenu }: { onRestart: () => void; onMenu: () => void }) {
+function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; onRestart: () => void; onMenu: () => void; onNextStage?: () => void }) {
+  const isStage1 = stage === 1;
+  const title = isStage1 ? "PANTAI KEMBALI BERSIH!" : "TERUMBU KARANG SELAMAT!";
+  const subtitle = isStage1 ? "STAGE 1 CLEAR" : "STAGE 2 CLEAR";
+  const message = isStage1
+    ? "Sampah kecil maupun besar sama bahayanya. Kalau terbawa ombak, butuh ratusan tahun untuk hancur dan bisa meracuni laut kita!"
+    : "Jaring hantu menjebak ribuan hewan laut tiap tahun, dan tumpahan oli bisa membunuh karang. Selalu jaga laut kita ya!";
+  const reward = isStage1 ? "Pecahan Kristal Terumbu" : "Mahkota Penjaga Karang";
+  const rewardDesc = isStage1
+    ? "Berguna untuk perjalanan ke Karang Derawan!"
+    : "Tanda kamu pahlawan sejati Pulau Derawan!";
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-y-auto bg-gradient-to-b from-sky to-primary/30 p-4">
       {/* Sparkles */}

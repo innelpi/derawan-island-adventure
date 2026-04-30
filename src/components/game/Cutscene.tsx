@@ -1,10 +1,12 @@
 import { useState } from "react";
+import type { StageId } from "@/game/types";
 
 interface CutsceneProps {
   onFinish: () => void;
+  stage?: StageId;
 }
 
-const PANELS = [
+const PANELS_STAGE1 = [
   {
     bg: "from-sky via-sky to-sea-deep",
     text: "Akhirnya liburan ke Pulau Derawan! Pantainya cantik banget…",
@@ -26,7 +28,30 @@ const PANELS = [
   },
 ];
 
-export function Cutscene({ onFinish }: CutsceneProps) {
+const PANELS_STAGE2 = [
+  {
+    bg: "from-primary via-sea to-sea-deep",
+    text: "Wow, di bawah laut Derawan terumbu karangnya warna-warni! Banyak ikan kecil berenang…",
+    showHero: true,
+    showDark: false,
+  },
+  {
+    bg: "from-sea-deep via-trash to-trash",
+    text: "Astaga! Ada jaring nelayan terbuang & tumpahan oli yang bikin karang sakit!",
+    showHero: true,
+    showDark: true,
+  },
+  {
+    bg: "from-trash via-trash-glow to-sea-deep",
+    text: "Kalau dibiarkan, ikan-ikan terjebak & karangnya mati! Saatnya beraksi lagi, Pahlawan!",
+    showHero: true,
+    showDark: true,
+    showFist: true,
+  },
+];
+
+export function Cutscene({ onFinish, stage = 1 }: CutsceneProps) {
+  const PANELS = stage === 2 ? PANELS_STAGE2 : PANELS_STAGE1;
   const [idx, setIdx] = useState(0);
   const panel = PANELS[idx];
 
