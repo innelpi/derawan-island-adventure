@@ -1,3 +1,4 @@
+import litterKingImg from "@/assets/litter-king.png";
 import {
   BOTTLE_BEAST,
   COCONUT_TREE,
@@ -16,6 +17,12 @@ import {
 import { ARENA_H, ARENA_W, GameState, STAGE_CONFIGS } from "./types";
 
 const SCALE = 2; // pixel sprite scale within arena
+
+// Preload Litter King artwork (Stage 1 boss).
+const litterKingHTMLImg: HTMLImageElement = new Image();
+litterKingHTMLImg.src = litterKingImg;
+let litterKingReady = false;
+litterKingHTMLImg.onload = () => { litterKingReady = true; };
 
 // Pre-computed coconut tree positions for parallax background
 const TREES = [
