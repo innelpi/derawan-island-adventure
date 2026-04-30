@@ -4,6 +4,11 @@
 let ctx: AudioContext | null = null;
 let muted = false;
 let masterGain: GainNode | null = null;
+let sfxVol = 0.6; // user-controlled 0..1
+
+function applyMaster() {
+  if (masterGain) masterGain.gain.value = muted ? 0 : 0.35 * sfxVol * 2; // baseline 0.35*sfx
+}
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -13,8 +18,8 @@ function getCtx(): AudioContext | null {
       if (!Ctor) return null;
       ctx = new Ctor();
       masterGain = ctx.createGain();
-      masterGain.gain.value = 0.35;
       masterGain.connect(ctx.destination);
+      applyMaster();
     } catch {
       return null;
     }
@@ -29,7 +34,12 @@ export function unlockAudio() {
 
 export function setMuted(m: boolean) {
   muted = m;
-  if (masterGain) masterGain.gain.value = m ? 0 : 0.35;
+  applyMaster();
+}
+
+export function setSfxVolume(v: number) {
+  sfxVol = Math.max(0, Math.min(1, v));
+  applyMaster();
 }
 
 export function isMuted() {
@@ -127,5 +137,19 @@ export const SFX = {
   },
   pickup() {
     tone({ freq: 800, freqEnd: 1400, dur: 0.1, type: "triangle", vol: 0.2 });
+  },
+  correct() {
+    [659, 784, 1046, 1318].forEach((f, i) =>
+      tone({ freq: f, dur: 0.12, type: "triangle", vol: 0.28, delay: i * 0.07 }),
+    );
+  },
+  wrong() {
+    tone({ freq: 220, freqEnd: 110, dur: 0.3, type: "sawtooth", vol: 0.25 });
+    tone({ freq: 180, freqEnd: 90, dur: 0.35, type: "square", vol: 0.18, delay: 0.1 });
+  },
+  hpUp() {
+    [523, 659, 880, 1175].forEach((f, i) =>
+      tone({ freq: f, dur: 0.1, type: "triangle", vol: 0.3, delay: i * 0.06 }),
+    );
   },
 };
