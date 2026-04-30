@@ -126,19 +126,36 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
   if (state.boss.active && !state.boss.defeated) {
     const b = state.boss;
     const intro = b.introTimer > 0;
+    const useImage = state.stage === 1 && litterKingReady;
     const bossSprite = state.stage === 2 ? NET_MASTER : LITTER_KING;
     const auraColor = state.stage === 2 ? "rgba(122,223,255,0.4)" : "rgba(184, 107, 255, 0.4)";
     items.push({
       y: b.pos.y - 100,
       draw: () => {
         const wob = Math.sin(state.time * 3) * 2;
-        const sx = b.pos.x - (bossSprite[0].length * SCALE) / 2;
-        const sy = b.pos.y - bossSprite.length * SCALE + 8 + wob;
-        if (b.hurtTimer > 0) {
-          ctx.globalCompositeOperation = "source-over";
-          drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#ffffff");
+        if (useImage) {
+          // Render Litter King PNG (artwork pixel-art kustom)
+          const targetH = 96; // tinggi tampil di arena
+          const ratio = litterKingHTMLImg.width / litterKingHTMLImg.height;
+          const targetW = targetH * ratio;
+          const sx = b.pos.x - targetW / 2;
+          const sy = b.pos.y - targetH + 8 + wob;
+          ctx.save();
+          (ctx as unknown as { imageSmoothingEnabled: boolean }).imageSmoothingEnabled = false;
+          if (b.hurtTimer > 0) {
+            ctx.filter = "brightness(2.4) saturate(0.4)";
+          }
+          ctx.drawImage(litterKingHTMLImg, sx, sy, targetW, targetH);
+          ctx.restore();
         } else {
-          drawSprite(ctx, bossSprite, sx, sy, SCALE);
+          const sx = b.pos.x - (bossSprite[0].length * SCALE) / 2;
+          const sy = b.pos.y - bossSprite.length * SCALE + 8 + wob;
+          if (b.hurtTimer > 0) {
+            ctx.globalCompositeOperation = "source-over";
+            drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#ffffff");
+          } else {
+            drawSprite(ctx, bossSprite, sx, sy, SCALE);
+          }
         }
         if (intro) {
           ctx.fillStyle = auraColor;
