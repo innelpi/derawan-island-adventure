@@ -61,10 +61,6 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           </g>
         </svg>
 
-        {/* Palem kiri — swaying lembut dari pangkal bawah */}
-        <div className="absolute left-0 top-0 h-[55%] w-[28%] origin-bottom-left palm-sway" />
-        {/* Palem kanan */}
-        <div className="absolute right-0 top-0 h-[55%] w-[28%] origin-bottom-right palm-sway-rev" />
       </div>
 
       {/* Buttons positioned over the existing button area in the image */}
