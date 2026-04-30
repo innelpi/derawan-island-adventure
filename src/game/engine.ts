@@ -270,13 +270,14 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     }
     state.boss.hurtTimer = Math.max(0, state.boss.hurtTimer - dt);
 
-    // Boss also slowly raises pollution
-    state.pollution = clamp(state.pollution + 3 * dt, 0, 100);
+    // Boss also slowly raises pollution (lebih pelan)
+    state.pollution = clamp(state.pollution + 1.5 * dt, 0, 100);
 
     if (state.boss.hp <= 0) {
       state.boss.defeated = true;
       state.shake = 1.0;
       emitParticles(state, state.boss.pos.x, state.boss.pos.y, "#7adfff", 40);
+      state.events.push("win");
       // small delay handled by scene transition
       setTimeout(() => {
         state.ended = "win";
@@ -295,6 +296,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
       h.hp -= 1;
       h.invincible = HERO_INVINCIBLE_TIME;
       state.shake = 0.3;
+      state.events.push("heroHurt");
       emitParticles(state, h.pos.x, h.pos.y, "#ff5577", 10);
       continue;
     }
