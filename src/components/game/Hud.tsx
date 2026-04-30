@@ -32,11 +32,11 @@ export function Hud({ state }: HudProps) {
         </div>
 
         {/* Pollution meter */}
-        <div className="flex flex-1 max-w-md flex-col items-center gap-1">
-          <span className="font-pixel text-[8px] sm:text-[10px] text-foreground text-shadow-pixel">
+        <div className="flex flex-1 max-w-md flex-col items-center gap-1.5">
+          <span className="rounded border-2 border-foreground bg-card px-2 py-0.5 font-pixel text-[8px] sm:text-[10px] text-foreground">
             POLUSI
           </span>
-          <div className="h-4 w-full border-2 border-foreground bg-foreground/30 sm:h-5">
+          <div className="h-4 w-full border-2 border-foreground bg-foreground/40 sm:h-5">
             <div
               className={`h-full transition-all duration-200 ${pollutionColor}`}
               style={{ width: `${state.pollution}%` }}
@@ -52,8 +52,8 @@ export function Hud({ state }: HudProps) {
 
       {/* Special meter */}
       <div className="flex items-center gap-2">
-        <span className="font-pixel text-[8px] sm:text-[10px] text-shadow-pixel">CLEAN WAVE</span>
-        <div className="h-3 flex-1 max-w-xs border-2 border-foreground bg-foreground/30">
+        <span className="rounded border-2 border-foreground bg-card px-1.5 py-0.5 font-pixel text-[8px] sm:text-[10px]">CLEAN WAVE</span>
+        <div className="h-3 flex-1 max-w-xs border-2 border-foreground bg-foreground/40">
           <div
             className={`h-full transition-all ${
               state.special >= 100 ? "bg-primary animate-flash" : "bg-primary/70"
