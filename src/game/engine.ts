@@ -139,24 +139,8 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
       }
     }
   }
-        // knockback
-        const dx = e.pos.x - h.pos.x;
-        const dy = e.pos.y - h.pos.y;
-        const d = Math.hypot(dx, dy) || 1;
-        e.pos.x += (dx / d) * 8;
-        e.pos.y += (dy / d) * 8;
-      }
-    }
-    // hit boss
-    if (state.boss.active && !state.boss.defeated) {
-      if (dist(ax, ay, state.boss.pos.x, state.boss.pos.y) < 50) {
-        state.boss.hp -= 1;
-        state.boss.hurtTimer = 0.2;
-        state.shake = Math.max(state.shake, 0.15);
-        emitParticles(state, state.boss.pos.x, state.boss.pos.y + 10, "#7adfff", 4);
-      }
-    }
-  }
+
+
 
   // Special attack
   if (input.specialPressed && state.special >= 100) {
