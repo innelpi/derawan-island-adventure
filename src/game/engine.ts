@@ -1,30 +1,33 @@
 import {
   ARENA_H,
   ARENA_W,
-  BEAST_HP,
-  BEAST_SPEED,
-  BOSS_ATTACK_INTERVAL,
-  BOSS_HP,
-  BOSS_PROJECTILE_SPEED,
   enemiesForWave,
+  enemyStats,
   Enemy,
   GameState,
-  GOBLIN_HP,
-  GOBLIN_SPEED,
   HERO_ATTACK_COOLDOWN,
   HERO_ATTACK_RANGE,
   HERO_INVINCIBLE_TIME,
+  HERO_MAX_HP_CAP,
   HERO_SPEED,
+  pickEnemyKind,
   POLLUTION_PER_ENEMY_PER_SEC,
   Projectile,
+  STAGE_CONFIGS,
   WAVE_COUNT,
 } from "./types";
 
 export interface InputState {
-  moveX: number; // -1..1
-  moveY: number; // -1..1
+  moveX: number;
+  moveY: number;
   attackPressed: boolean;
   specialPressed: boolean;
+}
+
+// Public helper: tambah HP saat jawab kuis benar (dipanggil dari React).
+export function addHeartReward(state: GameState) {
+  state.hero.maxHp = Math.min(HERO_MAX_HP_CAP, state.hero.maxHp + 1);
+  state.hero.hp = Math.min(state.hero.maxHp, state.hero.hp + 1);
 }
 
 function clamp(v: number, lo: number, hi: number) {
@@ -38,33 +41,23 @@ function dist(ax: number, ay: number, bx: number, by: number) {
 }
 
 function spawnEnemy(state: GameState, kind: Enemy["kind"]) {
-  // spawn from edges
   const side = Math.floor(Math.random() * 4);
-  let x = 0,
-    y = 0;
-  if (side === 0) {
-    x = Math.random() * ARENA_W;
-    y = -10;
-  } else if (side === 1) {
-    x = ARENA_W + 10;
-    y = Math.random() * ARENA_H;
-  } else if (side === 2) {
-    x = Math.random() * ARENA_W;
-    y = ARENA_H + 10;
-  } else {
-    x = -10;
-    y = Math.random() * ARENA_H;
-  }
+  let x = 0, y = 0;
+  if (side === 0) { x = Math.random() * ARENA_W; y = -10; }
+  else if (side === 1) { x = ARENA_W + 10; y = Math.random() * ARENA_H; }
+  else if (side === 2) { x = Math.random() * ARENA_W; y = ARENA_H + 10; }
+  else { x = -10; y = Math.random() * ARENA_H; }
+  const stats = enemyStats(kind);
   state.enemies.push({
     id: state.nextEntityId++,
     kind,
     pos: { x, y },
-    hp: kind === "goblin" ? GOBLIN_HP : BEAST_HP,
-    maxHp: kind === "goblin" ? GOBLIN_HP : BEAST_HP,
-    speed: kind === "goblin" ? GOBLIN_SPEED : BEAST_SPEED,
+    hp: stats.hp,
+    maxHp: stats.hp,
+    speed: stats.speed,
     facing: x < ARENA_W / 2 ? 1 : -1,
     hurtTimer: 0,
-    size: kind === "goblin" ? 10 : 14,
+    size: stats.size,
   });
 }
 
