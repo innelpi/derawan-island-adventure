@@ -146,6 +146,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
   if (input.specialPressed && state.special >= 100) {
     state.special = 0;
     state.shake = 0.4;
+    state.events.push("special");
     // damage all enemies
     for (const e of state.enemies) {
       e.hp -= 2;
@@ -177,6 +178,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
       h.hp -= 1;
       h.invincible = HERO_INVINCIBLE_TIME;
       state.shake = 0.25;
+      state.events.push("heroHurt");
       emitParticles(state, h.pos.x, h.pos.y, "#ff5577", 8);
       // knockback hero
       h.pos.x = clamp(h.pos.x - (dx / d) * 12, 12, ARENA_W - 12);
@@ -191,6 +193,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
       emitParticles(state, e.pos.x, e.pos.y, "#b96bff", 10);
       state.special = Math.min(100, state.special + 18);
       state.pollution = Math.max(0, state.pollution - 3);
+      state.events.push("enemyDie");
     } else {
       alive.push(e);
     }
@@ -222,14 +225,19 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     // wave clear?
     if (state.spawnedThisWave >= target && state.enemies.length === 0) {
       if (state.wave < WAVE_COUNT) {
+        state.lastClearedWave = state.wave;
         state.wave++;
         state.spawnedThisWave = 0;
         state.waveTimer = -1; // small breather
-      } else {
+        state.events.push("waveClear");
+      } else if (!state.boss.active) {
         // Spawn boss
+        state.lastClearedWave = state.wave;
         state.boss.active = true;
-        state.boss.introTimer = 1.2;
+        state.boss.introTimer = 1.4;
+        state.boss.attackCooldown = BOSS_ATTACK_INTERVAL + 0.5;
         state.shake = 0.6;
+        state.events.push("bossIntro");
       }
     }
   }
@@ -241,12 +249,13 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     } else {
       state.boss.attackCooldown -= dt;
       if (state.boss.attackCooldown <= 0) {
-        state.boss.attackCooldown = 1.6;
-        // shoot 3 projectiles toward hero
-        for (let i = -1; i <= 1; i++) {
+        state.boss.attackCooldown = BOSS_ATTACK_INTERVAL;
+        state.events.push("bossShoot");
+        // shoot 2 slower projectiles toward hero (lebih mudah dihindari anak)
+        for (let i = 0; i < 2; i++) {
           const dx = h.pos.x - state.boss.pos.x;
           const dy = h.pos.y - state.boss.pos.y;
-          const ang = Math.atan2(dy, dx) + i * 0.25;
+          const ang = Math.atan2(dy, dx) + (i === 0 ? -0.18 : 0.18);
           state.projectiles.push({
             id: state.nextEntityId++,
             pos: { x: state.boss.pos.x, y: state.boss.pos.y + 20 },
