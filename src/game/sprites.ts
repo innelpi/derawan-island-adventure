@@ -282,3 +282,69 @@ export const SPARKLE: Sprite = [
   ".fff.",
   "..f..",
 ];
+
+// =================== STAGE 2 SPRITES ===================
+// Ghost Net (12x12) — jaring nelayan terbuang, abu-abu kebiruan
+export const GHOST_NET: Sprite = [
+  "..aaaaaaaa..",
+  ".awwwwwwwwa.",
+  ".awwAAwwAAwa",
+  ".awAAwwAAwwa",
+  ".awwAAeewAwa",
+  ".awAAwwAAwwa",
+  ".awwAAwwAAwa",
+  ".awAAwwAAwwa",
+  ".awwwwwwwwa.",
+  "..aaaaaaaa..",
+  "..a......a..",
+  "..k......k..",
+];
+
+// Oil Slick (14x12) — gumpalan oli ungu-hitam mengkilap
+export const OIL_SLICK: Sprite = [
+  "...tttttttt...",
+  "..tppppppppt..",
+  ".tpPPPPPPPPpt.",
+  "tpPPwwwwwPPpt.",
+  "tpPwwppppwwPpt",
+  "tpPweepppewPpt",
+  "tpPwppppppwPpt",
+  "tpPPwwwwwwPpt.",
+  ".tpPPPPPPPpt..",
+  "..tppppppt....",
+  "...tttttt.....",
+  "...kk..kk.....",
+];
+
+// Net Master Boss (28x28) — kapten jaring hantu
+export const NET_MASTER: Sprite = [
+  ".......aaaaaaaaaaaaaa.......",
+  "......awwwwwwwwwwwwwwa......",
+  ".....aAAwwwwwwwwwwAAAAa.....",
+  "....aAAAwwAAwwwwAAwwwAAAa...",
+  "....aAAwwwAAeeAAwwwAAAAAa...",
+  "....aAAwwAAAwwAAAwwAAAAAa...",
+  "....aAAAAwwwwwwwwwwwAAAAa...",
+  ".....aAAAAAAAAAAAAAAAAAa....",
+  ".....aAAAAAAAkkkkAAAAAAa....",
+  "......aAAAkkmmmmmmkkkAa.....",
+  ".......aAkmmmmmmmmmkAa......",
+  "........aAAAAAAAAAAAa.......",
+  "...aaaaaawwwwwwwwwwwaaaa....",
+  "..awwwawwwwwwwwwwwwwawwwa...",
+  ".awwawwawwwwwwwwwwwwawwwwa..",
+  "awwawwwwawwwwwwwwwwwawwwwwa.",
+  "awawwwwwwawwwwwwwwwwawwwwwa.",
+  ".awwwwwwwwawwwwwwwwwawwwwa..",
+  "..awwwwwwwwawwwwwwwwawwwa...",
+  "...awwwwwwwwawwwwwwwawwa....",
+  "....awwwwwwwwawwwwwwawa.....",
+  ".....aaawwwwwwawwwwawa......",
+  "........aawwwwwawwawa.......",
+  "..........aawwwawawa........",
+  "............aawawa..........",
+  ".............aaaa...........",
+  "..............kk............",
+  "..............kk............",
+];
+
