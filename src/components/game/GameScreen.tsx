@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ActionButton, VirtualJoystick } from "./Controls";
+import { EduPopup } from "./EduPopup";
 import { Hud } from "./Hud";
+import { SFX, isMuted, setMuted, unlockAudio } from "@/game/audio";
+import { BOSS_INTRO_FACT, EDU_FACTS, EduFact } from "@/game/edukasi";
 import { updateGame } from "@/game/engine";
 import { renderGame } from "@/game/render";
-import { GameState, makeInitialState } from "@/game/types";
+import { GameEvent, GameState, makeInitialState } from "@/game/types";
 import { useInput } from "@/game/useInput";
 
 interface GameScreenProps {
@@ -18,9 +21,14 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
   const { read } = useInput();
   const touch = useRef({ mx: 0, my: 0, attack: false, special: false });
   const [, force] = useState(0);
+  const [muted, setMutedState] = useState(isMuted());
+  const [eduFact, setEduFact] = useState<EduFact | null>(null);
+  const pausedRef = useRef(false);
+  const factIdxRef = useRef(0);
   const isMobile = typeof window !== "undefined" && "ontouchstart" in window;
 
   useEffect(() => {
+    unlockAudio();
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     let raf = 0;
@@ -40,19 +48,47 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
     resize();
     window.addEventListener("resize", resize);
 
+    const handleEvent = (ev: GameEvent) => {
+      switch (ev) {
+        case "attack": SFX.attack(); break;
+        case "hit": SFX.hit(); break;
+        case "enemyDie": SFX.enemyDie(); break;
+        case "heroHurt": SFX.heroHurt(); break;
+        case "special": SFX.special(); break;
+        case "bossIntro":
+          SFX.bossIntro();
+          pausedRef.current = true;
+          setEduFact(BOSS_INTRO_FACT);
+          break;
+        case "bossShoot": SFX.bossShoot(); break;
+        case "waveClear":
+          SFX.waveClear();
+          pausedRef.current = true;
+          setEduFact(EDU_FACTS[factIdxRef.current % EDU_FACTS.length]);
+          factIdxRef.current++;
+          break;
+        case "win": SFX.win(); break;
+        case "lose": SFX.lose(); break;
+      }
+    };
+
     const loop = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
-      const input = read({
-        mx: touch.current.mx,
-        my: touch.current.my,
-        attack: touch.current.attack,
-        special: touch.current.special,
-      });
-      touch.current.attack = false;
-      touch.current.special = false;
 
-      updateGame(stateRef.current, input, dt);
+      if (!pausedRef.current) {
+        const input = read({
+          mx: touch.current.mx,
+          my: touch.current.my,
+          attack: touch.current.attack,
+          special: touch.current.special,
+        });
+        touch.current.attack = false;
+        touch.current.special = false;
+        updateGame(stateRef.current, input, dt);
+        for (const ev of stateRef.current.events) handleEvent(ev);
+      }
+
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
       renderGame(ctx, stateRef.current, w, h);
@@ -68,7 +104,7 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
         setTimeout(() => {
           if (result === "win") onWin();
           else onLose();
-        }, 500);
+        }, 600);
       }
       raf = requestAnimationFrame(loop);
     };
@@ -80,10 +116,32 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
     };
   }, [onWin, onLose, read]);
 
+  const closeEdu = () => {
+    SFX.click();
+    setEduFact(null);
+    pausedRef.current = false;
+  };
+
+  const toggleMute = () => {
+    const next = !muted;
+    setMuted(next);
+    setMutedState(next);
+    if (!next) SFX.click();
+  };
+
   return (
     <div ref={containerRef} className="relative h-full w-full overflow-hidden bg-foreground">
       <canvas ref={canvasRef} className="block h-full w-full" />
       <Hud state={stateRef.current} />
+
+      {/* Mute toggle */}
+      <button
+        onClick={toggleMute}
+        aria-label={muted ? "Aktifkan suara" : "Matikan suara"}
+        className="pixel-btn absolute right-3 top-3 z-30 rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
+      >
+        {muted ? "🔇" : "🔊"}
+      </button>
 
       {/* Touch controls */}
       {isMobile && (
@@ -118,6 +176,9 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
           WASD gerak · SPASI serang · E clean wave
         </div>
       )}
+
+      {/* Edu popup overlay (pauses game) */}
+      {eduFact && <EduPopup fact={eduFact} onClose={closeEdu} />}
     </div>
   );
 }
