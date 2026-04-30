@@ -17,12 +17,12 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-secondary">
-      {/* Background image — pixel art beach */}
+      {/* Background image — pixel art beach (subtle sway untuk efek palem tertiup angin) */}
       <img
         src={titleBg}
         alt="Pulau Derawan pantai pixel art dengan penyu dan logo Derawan Island"
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity ${loaded ? "opacity-100" : "opacity-0"}`}
-        style={{ imageRendering: "pixelated" }}
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity bg-sway ${loaded ? "opacity-100" : "opacity-0"}`}
+        style={{ imageRendering: "pixelated", transformOrigin: "center bottom" }}
       />
 
       {/* Overlay animasi — air berputar di belakang penyu + palem swaying */}
