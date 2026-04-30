@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { SFX, unlockAudio } from "@/game/audio";
 
 interface TitleScreenProps {
   onStart: () => void;
@@ -37,7 +38,11 @@ export function TitleScreen({ onStart }: TitleScreenProps) {
         {/* Buttons */}
         <div className="z-20 flex w-full max-w-xs flex-col gap-3 pb-2">
           <button
-            onClick={onStart}
+            onClick={() => {
+              unlockAudio();
+              SFX.click();
+              onStart();
+            }}
             className="pixel-btn rounded-md border-4 border-foreground bg-secondary px-6 py-4 font-pixel text-base text-secondary-foreground shadow-pixel-lg active:translate-y-1 active:shadow-pixel sm:text-lg"
           >
             ▶ BERMAIN
