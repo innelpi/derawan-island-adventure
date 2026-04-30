@@ -208,11 +208,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     // spawn at intervals
     if (state.spawnedThisWave < target && state.waveTimer > 0.6) {
       state.waveTimer = 0;
-      const kind: Enemy["kind"] =
-        Math.random() < (state.wave === 1 ? 0.85 : state.wave === 2 ? 0.6 : 0.45)
-          ? "goblin"
-          : "beast";
-      spawnEnemy(state, kind);
+      spawnEnemy(state, pickEnemyKind(state.stage, state.wave));
       state.spawnedThisWave++;
     }
     // wave clear?
@@ -228,7 +224,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
         state.lastClearedWave = state.wave;
         state.boss.active = true;
         state.boss.introTimer = 1.4;
-        state.boss.attackCooldown = BOSS_ATTACK_INTERVAL + 0.5;
+        state.boss.attackCooldown = STAGE_CONFIGS[state.stage].bossInterval + 0.5;
         state.shake = 0.6;
         state.events.push("bossIntro");
       }
@@ -242,9 +238,9 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     } else {
       state.boss.attackCooldown -= dt;
       if (state.boss.attackCooldown <= 0) {
-        state.boss.attackCooldown = BOSS_ATTACK_INTERVAL;
+        const cfg = STAGE_CONFIGS[state.stage];
+        state.boss.attackCooldown = cfg.bossInterval;
         state.events.push("bossShoot");
-        // shoot 2 slower projectiles toward hero (lebih mudah dihindari anak)
         for (let i = 0; i < 2; i++) {
           const dx = h.pos.x - state.boss.pos.x;
           const dy = h.pos.y - state.boss.pos.y;
@@ -253,8 +249,8 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
             id: state.nextEntityId++,
             pos: { x: state.boss.pos.x, y: state.boss.pos.y + 20 },
             vel: {
-              x: Math.cos(ang) * BOSS_PROJECTILE_SPEED,
-              y: Math.sin(ang) * BOSS_PROJECTILE_SPEED,
+              x: Math.cos(ang) * cfg.bossProjectileSpeed,
+              y: Math.sin(ang) * cfg.bossProjectileSpeed,
             },
             life: 4,
           });
