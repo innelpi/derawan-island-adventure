@@ -190,6 +190,11 @@
   .bubble-4 { animation-delay: 0.6s; }
   .palm-sway { animation: palm-sway 5s ease-in-out infinite; }
   .palm-sway-rev { animation: palm-sway-rev 5.4s ease-in-out infinite; }
+  @keyframes bg-sway {
+    0%, 100% { transform: skewX(-0.4deg) scale(1.01); }
+    50% { transform: skewX(0.4deg) scale(1.01); }
+  }
+  .bg-sway { animation: bg-sway 6s ease-in-out infinite; }
 
   .animate-wave { animation: wave 2s ease-in-out infinite; }
   .animate-bob { animation: bob 1.6s ease-in-out infinite; }
