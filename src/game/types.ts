@@ -1,13 +1,17 @@
-// Game logic types & constants for Stage 1: Pantai Derawan
+// Game logic types & constants for Stage 1: Pantai Derawan, Stage 2: Karang Derawan
 
 export type GameScene =
   | "title"
+  | "stageSelect"
+  | "settings"
   | "cutscene"
   | "playing"
   | "win"
   | "gameover";
 
-export type EnemyKind = "goblin" | "beast";
+export type StageId = 1 | 2;
+
+export type EnemyKind = "goblin" | "beast" | "ghostnet" | "oilslick";
 
 export interface Vec2 {
   x: number;
@@ -22,8 +26,8 @@ export interface Enemy {
   maxHp: number;
   speed: number;
   facing: 1 | -1;
-  hurtTimer: number; // flash white when hit
-  size: number; // hitbox radius
+  hurtTimer: number;
+  size: number;
 }
 
 export interface Projectile {
@@ -41,7 +45,7 @@ export interface Boss {
   attackCooldown: number;
   active: boolean;
   defeated: boolean;
-  introTimer: number; // shake intro
+  introTimer: number;
 }
 
 export interface Hero {
@@ -55,24 +59,23 @@ export interface Hero {
 }
 
 export interface GameState {
+  stage: StageId;
   hero: Hero;
   enemies: Enemy[];
   projectiles: Projectile[];
   boss: Boss;
-  pollution: number; // 0..100
-  wave: number; // 0..3 then boss
+  pollution: number;
+  wave: number;
   waveTimer: number;
   spawnedThisWave: number;
   enemiesNeededThisWave: number;
-  special: number; // 0..100
+  special: number;
   shake: number;
   ended: "win" | "lose" | null;
   particles: Particle[];
   nextEntityId: number;
   time: number;
-  // events flushed each frame for UI/SFX hooks
   events: GameEvent[];
-  // wave the player has cleared (for showing fact between waves)
   lastClearedWave: number;
   bossIntroShown: boolean;
 }
@@ -101,25 +104,73 @@ export interface Particle {
 export const ARENA_W = 480;
 export const ARENA_H = 270;
 
-export const HERO_SPEED = 90; // px/s
+export const HERO_SPEED = 90;
 export const HERO_ATTACK_RANGE = 36;
 export const HERO_ATTACK_COOLDOWN = 0.35;
 export const HERO_INVINCIBLE_TIME = 1.0;
+
+export const HERO_MAX_HP_CAP = 6; // batas kenaikan HP via kuis
 
 export const GOBLIN_HP = 1;
 export const GOBLIN_SPEED = 28;
 export const BEAST_HP = 2;
 export const BEAST_SPEED = 22;
 
+// Stage 2 enemies
+export const GHOSTNET_HP = 1;
+export const GHOSTNET_SPEED = 32;
+export const OILSLICK_HP = 2;
+export const OILSLICK_SPEED = 18;
+
 export const BOSS_HP = 8;
 export const BOSS_PROJECTILE_SPEED = 55;
-export const BOSS_ATTACK_INTERVAL = 2.6; // seconds between volleys (lebih lambat, ramah anak)
+export const BOSS_ATTACK_INTERVAL = 2.6;
 
-export const POLLUTION_PER_ENEMY_PER_SEC = 1.6; // each living enemy adds this/sec
+// Stage 2 boss (Net Master) — sedikit lebih kuat tapi tetap ramah anak
+export const BOSS2_HP = 10;
+export const BOSS2_PROJECTILE_SPEED = 65;
+export const BOSS2_ATTACK_INTERVAL = 2.4;
+
+export const POLLUTION_PER_ENEMY_PER_SEC = 1.6;
 export const WAVE_COUNT = 3;
 
-export function makeInitialState(): GameState {
+export interface StageConfig {
+  bossHp: number;
+  bossInterval: number;
+  bossProjectileSpeed: number;
+  bossName: string;
+  enemyKinds: { wave: number; pool: { kind: EnemyKind; weight: number }[] }[];
+}
+
+export const STAGE_CONFIGS: Record<StageId, StageConfig> = {
+  1: {
+    bossHp: BOSS_HP,
+    bossInterval: BOSS_ATTACK_INTERVAL,
+    bossProjectileSpeed: BOSS_PROJECTILE_SPEED,
+    bossName: "LITTER KING",
+    enemyKinds: [
+      { wave: 1, pool: [{ kind: "goblin", weight: 0.85 }, { kind: "beast", weight: 0.15 }] },
+      { wave: 2, pool: [{ kind: "goblin", weight: 0.6 }, { kind: "beast", weight: 0.4 }] },
+      { wave: 3, pool: [{ kind: "goblin", weight: 0.45 }, { kind: "beast", weight: 0.55 }] },
+    ],
+  },
+  2: {
+    bossHp: BOSS2_HP,
+    bossInterval: BOSS2_ATTACK_INTERVAL,
+    bossProjectileSpeed: BOSS2_PROJECTILE_SPEED,
+    bossName: "NET MASTER",
+    enemyKinds: [
+      { wave: 1, pool: [{ kind: "ghostnet", weight: 0.8 }, { kind: "oilslick", weight: 0.2 }] },
+      { wave: 2, pool: [{ kind: "ghostnet", weight: 0.55 }, { kind: "oilslick", weight: 0.45 }] },
+      { wave: 3, pool: [{ kind: "ghostnet", weight: 0.4 }, { kind: "oilslick", weight: 0.6 }] },
+    ],
+  },
+};
+
+export function makeInitialState(stage: StageId = 1): GameState {
+  const cfg = STAGE_CONFIGS[stage];
   return {
+    stage,
     hero: {
       pos: { x: ARENA_W / 2, y: ARENA_H / 2 + 40 },
       hp: 3,
@@ -133,8 +184,8 @@ export function makeInitialState(): GameState {
     projectiles: [],
     boss: {
       pos: { x: ARENA_W / 2, y: 90 },
-      hp: BOSS_HP,
-      maxHp: BOSS_HP,
+      hp: cfg.bossHp,
+      maxHp: cfg.bossHp,
       hurtTimer: 0,
       attackCooldown: 2,
       active: false,
@@ -160,4 +211,25 @@ export function makeInitialState(): GameState {
 
 export function enemiesForWave(wave: number): number {
   return [0, 4, 6, 8][wave] ?? 8;
+}
+
+export function pickEnemyKind(stage: StageId, wave: number): EnemyKind {
+  const cfg = STAGE_CONFIGS[stage];
+  const entry = cfg.enemyKinds.find((e) => e.wave === wave) ?? cfg.enemyKinds[cfg.enemyKinds.length - 1];
+  const total = entry.pool.reduce((s, p) => s + p.weight, 0);
+  let r = Math.random() * total;
+  for (const p of entry.pool) {
+    r -= p.weight;
+    if (r <= 0) return p.kind;
+  }
+  return entry.pool[0].kind;
+}
+
+export function enemyStats(kind: EnemyKind): { hp: number; speed: number; size: number } {
+  switch (kind) {
+    case "goblin": return { hp: GOBLIN_HP, speed: GOBLIN_SPEED, size: 10 };
+    case "beast": return { hp: BEAST_HP, speed: BEAST_SPEED, size: 14 };
+    case "ghostnet": return { hp: GHOSTNET_HP, speed: GHOSTNET_SPEED, size: 12 };
+    case "oilslick": return { hp: OILSLICK_HP, speed: OILSLICK_SPEED, size: 14 };
+  }
 }

@@ -1,30 +1,33 @@
 import {
   ARENA_H,
   ARENA_W,
-  BEAST_HP,
-  BEAST_SPEED,
-  BOSS_ATTACK_INTERVAL,
-  BOSS_HP,
-  BOSS_PROJECTILE_SPEED,
   enemiesForWave,
+  enemyStats,
   Enemy,
   GameState,
-  GOBLIN_HP,
-  GOBLIN_SPEED,
   HERO_ATTACK_COOLDOWN,
   HERO_ATTACK_RANGE,
   HERO_INVINCIBLE_TIME,
+  HERO_MAX_HP_CAP,
   HERO_SPEED,
+  pickEnemyKind,
   POLLUTION_PER_ENEMY_PER_SEC,
   Projectile,
+  STAGE_CONFIGS,
   WAVE_COUNT,
 } from "./types";
 
 export interface InputState {
-  moveX: number; // -1..1
-  moveY: number; // -1..1
+  moveX: number;
+  moveY: number;
   attackPressed: boolean;
   specialPressed: boolean;
+}
+
+// Public helper: tambah HP saat jawab kuis benar (dipanggil dari React).
+export function addHeartReward(state: GameState) {
+  state.hero.maxHp = Math.min(HERO_MAX_HP_CAP, state.hero.maxHp + 1);
+  state.hero.hp = Math.min(state.hero.maxHp, state.hero.hp + 1);
 }
 
 function clamp(v: number, lo: number, hi: number) {
@@ -38,33 +41,23 @@ function dist(ax: number, ay: number, bx: number, by: number) {
 }
 
 function spawnEnemy(state: GameState, kind: Enemy["kind"]) {
-  // spawn from edges
   const side = Math.floor(Math.random() * 4);
-  let x = 0,
-    y = 0;
-  if (side === 0) {
-    x = Math.random() * ARENA_W;
-    y = -10;
-  } else if (side === 1) {
-    x = ARENA_W + 10;
-    y = Math.random() * ARENA_H;
-  } else if (side === 2) {
-    x = Math.random() * ARENA_W;
-    y = ARENA_H + 10;
-  } else {
-    x = -10;
-    y = Math.random() * ARENA_H;
-  }
+  let x = 0, y = 0;
+  if (side === 0) { x = Math.random() * ARENA_W; y = -10; }
+  else if (side === 1) { x = ARENA_W + 10; y = Math.random() * ARENA_H; }
+  else if (side === 2) { x = Math.random() * ARENA_W; y = ARENA_H + 10; }
+  else { x = -10; y = Math.random() * ARENA_H; }
+  const stats = enemyStats(kind);
   state.enemies.push({
     id: state.nextEntityId++,
     kind,
     pos: { x, y },
-    hp: kind === "goblin" ? GOBLIN_HP : BEAST_HP,
-    maxHp: kind === "goblin" ? GOBLIN_HP : BEAST_HP,
-    speed: kind === "goblin" ? GOBLIN_SPEED : BEAST_SPEED,
+    hp: stats.hp,
+    maxHp: stats.hp,
+    speed: stats.speed,
     facing: x < ARENA_W / 2 ? 1 : -1,
     hurtTimer: 0,
-    size: kind === "goblin" ? 10 : 14,
+    size: stats.size,
   });
 }
 
@@ -215,11 +208,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     // spawn at intervals
     if (state.spawnedThisWave < target && state.waveTimer > 0.6) {
       state.waveTimer = 0;
-      const kind: Enemy["kind"] =
-        Math.random() < (state.wave === 1 ? 0.85 : state.wave === 2 ? 0.6 : 0.45)
-          ? "goblin"
-          : "beast";
-      spawnEnemy(state, kind);
+      spawnEnemy(state, pickEnemyKind(state.stage, state.wave));
       state.spawnedThisWave++;
     }
     // wave clear?
@@ -235,7 +224,7 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
         state.lastClearedWave = state.wave;
         state.boss.active = true;
         state.boss.introTimer = 1.4;
-        state.boss.attackCooldown = BOSS_ATTACK_INTERVAL + 0.5;
+        state.boss.attackCooldown = STAGE_CONFIGS[state.stage].bossInterval + 0.5;
         state.shake = 0.6;
         state.events.push("bossIntro");
       }
@@ -249,9 +238,9 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
     } else {
       state.boss.attackCooldown -= dt;
       if (state.boss.attackCooldown <= 0) {
-        state.boss.attackCooldown = BOSS_ATTACK_INTERVAL;
+        const cfg = STAGE_CONFIGS[state.stage];
+        state.boss.attackCooldown = cfg.bossInterval;
         state.events.push("bossShoot");
-        // shoot 2 slower projectiles toward hero (lebih mudah dihindari anak)
         for (let i = 0; i < 2; i++) {
           const dx = h.pos.x - state.boss.pos.x;
           const dy = h.pos.y - state.boss.pos.y;
@@ -260,8 +249,8 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
             id: state.nextEntityId++,
             pos: { x: state.boss.pos.x, y: state.boss.pos.y + 20 },
             vel: {
-              x: Math.cos(ang) * BOSS_PROJECTILE_SPEED,
-              y: Math.sin(ang) * BOSS_PROJECTILE_SPEED,
+              x: Math.cos(ang) * cfg.bossProjectileSpeed,
+              y: Math.sin(ang) * cfg.bossProjectileSpeed,
             },
             life: 4,
           });

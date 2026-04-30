@@ -1,15 +1,29 @@
+import type { StageId } from "@/game/types";
+
 interface EndScreenProps {
   variant: "win" | "lose";
+  stage?: StageId;
   onRestart: () => void;
   onMenu: () => void;
+  onNextStage?: () => void;
 }
 
-export function EndScreen({ variant, onRestart, onMenu }: EndScreenProps) {
-  if (variant === "win") return <WinScreen onRestart={onRestart} onMenu={onMenu} />;
+export function EndScreen({ variant, stage = 1, onRestart, onMenu, onNextStage }: EndScreenProps) {
+  if (variant === "win") return <WinScreen stage={stage} onRestart={onRestart} onMenu={onMenu} onNextStage={onNextStage} />;
   return <LoseScreen onRestart={onRestart} onMenu={onMenu} />;
 }
 
-function WinScreen({ onRestart, onMenu }: { onRestart: () => void; onMenu: () => void }) {
+function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; onRestart: () => void; onMenu: () => void; onNextStage?: () => void }) {
+  const isStage1 = stage === 1;
+  const title = isStage1 ? "PANTAI KEMBALI BERSIH!" : "TERUMBU KARANG SELAMAT!";
+  const subtitle = isStage1 ? "STAGE 1 CLEAR" : "STAGE 2 CLEAR";
+  const message = isStage1
+    ? "Sampah kecil maupun besar sama bahayanya. Kalau terbawa ombak, butuh ratusan tahun untuk hancur dan bisa meracuni laut kita!"
+    : "Jaring hantu menjebak ribuan hewan laut tiap tahun, dan tumpahan oli bisa membunuh karang. Selalu jaga laut kita ya!";
+  const reward = isStage1 ? "Pecahan Kristal Terumbu" : "Mahkota Penjaga Karang";
+  const rewardDesc = isStage1
+    ? "Berguna untuk perjalanan ke Karang Derawan!"
+    : "Tanda kamu pahlawan sejati Pulau Derawan!";
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-y-auto bg-gradient-to-b from-sky to-primary/30 p-4">
       {/* Sparkles */}
@@ -18,44 +32,47 @@ function WinScreen({ onRestart, onMenu }: { onRestart: () => void; onMenu: () =>
       <div className="relative z-10 my-auto w-full max-w-md animate-pop-in space-y-4">
         <div className="rounded-md border-4 border-foreground bg-secondary p-4 text-center shadow-pixel-lg">
           <div className="font-pixel text-[10px] uppercase tracking-widest text-secondary-foreground">
-            STAGE CLEAR
+            {subtitle}
           </div>
           <h2 className="mt-2 font-pixel text-2xl leading-tight text-destructive text-shadow-pixel sm:text-3xl">
-            PANTAI KEMBALI BERSIH!
+            {title}
           </h2>
         </div>
 
-        {/* Education box */}
         <div className="rounded-md border-4 border-foreground bg-card p-4 shadow-pixel">
           <div className="mb-2 inline-block rounded border-2 border-foreground bg-accent px-2 py-0.5 font-pixel text-[8px] uppercase text-accent-foreground">
             💡 Pesan Edukasi
           </div>
           <p className="font-body text-sm leading-relaxed text-card-foreground sm:text-base">
-            <strong>Pahlawan!</strong> Sampah kecil maupun besar sama bahayanya. Kalau terbawa
-            ombak, butuh <strong>ratusan tahun</strong> untuk hancur dan bisa meracuni laut kita!
+            <strong>Pahlawan!</strong> {message}
           </p>
         </div>
 
-        {/* Reward */}
         <div className="flex items-center gap-3 rounded-md border-4 border-foreground bg-primary/20 p-3 shadow-pixel">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded border-4 border-foreground bg-primary">
             <CrystalSvg />
           </div>
           <div>
             <div className="font-pixel text-[10px] uppercase">Reward</div>
-            <div className="font-body text-sm font-semibold">Pecahan Kristal Terumbu</div>
-            <div className="font-body text-xs text-muted-foreground">
-              Berguna untuk perjalanan ke Kakaban nanti!
-            </div>
+            <div className="font-body text-sm font-semibold">{reward}</div>
+            <div className="font-body text-xs text-muted-foreground">{rewardDesc}</div>
           </div>
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row">
+          {onNextStage && (
+            <button
+              onClick={onNextStage}
+              className="pixel-btn flex-1 rounded border-4 border-foreground bg-secondary px-4 py-3 font-pixel text-xs text-secondary-foreground shadow-pixel active:translate-y-1"
+            >
+              ▶▶ STAGE 2
+            </button>
+          )}
           <button
             onClick={onRestart}
             className="pixel-btn flex-1 rounded border-4 border-foreground bg-primary px-4 py-3 font-pixel text-xs text-primary-foreground shadow-pixel active:translate-y-1"
           >
-            ▶ MAIN LAGI
+            ↻ MAIN LAGI
           </button>
           <button
             onClick={onMenu}
@@ -65,9 +82,11 @@ function WinScreen({ onRestart, onMenu }: { onRestart: () => void; onMenu: () =>
           </button>
         </div>
 
-        <p className="text-center font-body text-xs text-muted-foreground">
-          Stage 2 (Danau Kakaban) & Stage 3 (Maratua) — segera hadir!
-        </p>
+        {!isStage1 && (
+          <p className="text-center font-body text-xs text-muted-foreground">
+            🎉 Kamu sudah menamatkan semua stage MVP! Mantap, Pahlawan!
+          </p>
+        )}
       </div>
     </div>
   );
