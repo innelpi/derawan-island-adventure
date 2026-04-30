@@ -326,10 +326,12 @@ export function updateGame(state: GameState, input: InputState, dt: number) {
   state.shake = Math.max(0, state.shake - dt);
 
   // Lose conditions
-  if (h.hp <= 0) {
+  if (h.hp <= 0 && state.ended === null) {
     state.ended = "lose";
+    state.events.push("lose");
   }
-  if (state.pollution >= 100) {
+  if (state.pollution >= 100 && state.ended === null) {
     state.ended = "lose";
+    state.events.push("lose");
   }
 }
