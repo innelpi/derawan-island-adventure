@@ -28,26 +28,30 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       {/* Buttons positioned over the existing button area in the image */}
       <div className="relative z-10 flex h-full w-full flex-col items-center justify-end gap-3 pb-[6%] sm:pb-[8%]">
         <div className="flex w-full max-w-[260px] flex-col gap-3 px-4">
-          <button
-            onClick={() => {
-              unlockAudio();
-              SFX.click();
-              onPlay();
-            }}
-            className="pixel-btn rounded-md border-4 border-foreground bg-secondary px-6 py-3 font-pixel text-base text-secondary-foreground shadow-pixel-lg active:translate-y-1 active:shadow-pixel"
-            aria-label="Mulai bermain"
-          >
-            ▶ BERMAIN
-          </button>
-          <button
-            onClick={() => {
-              SFX.click();
-              onSettings();
-            }}
-            className="pixel-btn rounded-md border-4 border-foreground bg-primary px-6 py-3 font-pixel text-sm text-primary-foreground shadow-pixel active:translate-y-1"
-          >
-            ⚙ PENGATURAN
-          </button>
+          <div className="animate-float-soft" style={{ animationDelay: "0s" }}>
+            <button
+              onClick={() => {
+                unlockAudio();
+                SFX.click();
+                onPlay();
+              }}
+              className="pixel-btn w-full rounded-md border-4 border-foreground bg-secondary px-6 py-3 font-pixel text-base text-secondary-foreground shadow-pixel-lg transition-transform hover:scale-[1.03] active:translate-y-1 active:shadow-pixel"
+              aria-label="Mulai bermain"
+            >
+              ▶ BERMAIN
+            </button>
+          </div>
+          <div className="animate-float-soft" style={{ animationDelay: "0.8s" }}>
+            <button
+              onClick={() => {
+                SFX.click();
+                onSettings();
+              }}
+              className="pixel-btn w-full rounded-md border-4 border-foreground bg-primary px-6 py-3 font-pixel text-sm text-primary-foreground shadow-pixel transition-transform hover:scale-[1.03] active:translate-y-1"
+            >
+              ⚙ PENGATURAN
+            </button>
+          </div>
         </div>
       </div>
     </div>
