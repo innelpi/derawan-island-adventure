@@ -70,7 +70,24 @@ export interface GameState {
   particles: Particle[];
   nextEntityId: number;
   time: number;
+  // events flushed each frame for UI/SFX hooks
+  events: GameEvent[];
+  // wave the player has cleared (for showing fact between waves)
+  lastClearedWave: number;
+  bossIntroShown: boolean;
 }
+
+export type GameEvent =
+  | "attack"
+  | "hit"
+  | "enemyDie"
+  | "heroHurt"
+  | "special"
+  | "bossIntro"
+  | "bossShoot"
+  | "waveClear"
+  | "win"
+  | "lose";
 
 export interface Particle {
   pos: Vec2;
@@ -94,8 +111,9 @@ export const GOBLIN_SPEED = 28;
 export const BEAST_HP = 2;
 export const BEAST_SPEED = 22;
 
-export const BOSS_HP = 14;
-export const BOSS_PROJECTILE_SPEED = 70;
+export const BOSS_HP = 8;
+export const BOSS_PROJECTILE_SPEED = 55;
+export const BOSS_ATTACK_INTERVAL = 2.6; // seconds between volleys (lebih lambat, ramah anak)
 
 export const POLLUTION_PER_ENEMY_PER_SEC = 1.6; // each living enemy adds this/sec
 export const WAVE_COUNT = 3;
@@ -134,6 +152,9 @@ export function makeInitialState(): GameState {
     particles: [],
     nextEntityId: 1,
     time: 0,
+    events: [],
+    lastClearedWave: 0,
+    bossIntroShown: false,
   };
 }
 
