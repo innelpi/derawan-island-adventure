@@ -1,31 +1,42 @@
 import { useEffect, useRef, useState } from "react";
 import { ActionButton, VirtualJoystick } from "./Controls";
-import { EduPopup } from "./EduPopup";
 import { Hud } from "./Hud";
-import { SFX, isMuted, setMuted, unlockAudio } from "@/game/audio";
-import { BOSS_INTRO_FACT, EDU_FACTS, EduFact } from "@/game/edukasi";
-import { updateGame } from "@/game/engine";
+import { QuizPopup } from "./QuizPopup";
+import { SFX, isMuted, setMuted, setSfxVolume, unlockAudio } from "@/game/audio";
+import { addHeartReward, updateGame } from "@/game/engine";
+import { QuizQuestion, shuffleQuiz } from "@/game/quiz";
 import { renderGame } from "@/game/render";
-import { GameEvent, GameState, makeInitialState } from "@/game/types";
+import { loadSettings, saveSettings } from "@/game/settings";
+import { GameEvent, GameState, makeInitialState, StageId } from "@/game/types";
 import { useInput } from "@/game/useInput";
 
 interface GameScreenProps {
+  stage: StageId;
   onWin: () => void;
   onLose: () => void;
 }
 
-export function GameScreen({ onWin, onLose }: GameScreenProps) {
+export function GameScreen({ stage, onWin, onLose }: GameScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const stateRef = useRef<GameState>(makeInitialState());
+  const stateRef = useRef<GameState>(makeInitialState(stage));
   const { read } = useInput();
   const touch = useRef({ mx: 0, my: 0, attack: false, special: false });
   const [, force] = useState(0);
   const [muted, setMutedState] = useState(isMuted());
-  const [eduFact, setEduFact] = useState<EduFact | null>(null);
+  const [quiz, setQuiz] = useState<QuizQuestion | null>(null);
   const pausedRef = useRef(false);
-  const factIdxRef = useRef(0);
+  const quizPoolRef = useRef<QuizQuestion[]>(shuffleQuiz());
+  const quizIdxRef = useRef(0);
   const isMobile = typeof window !== "undefined" && "ontouchstart" in window;
+
+  // Apply user audio settings on mount
+  useEffect(() => {
+    const s = loadSettings();
+    setSfxVolume(s.sfxVolume);
+    setMuted(s.muted);
+    setMutedState(s.muted);
+  }, []);
 
   useEffect(() => {
     unlockAudio();
@@ -48,6 +59,13 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
     resize();
     window.addEventListener("resize", resize);
 
+    const showNextQuiz = () => {
+      const q = quizPoolRef.current[quizIdxRef.current % quizPoolRef.current.length];
+      quizIdxRef.current++;
+      pausedRef.current = true;
+      setQuiz(q);
+    };
+
     const handleEvent = (ev: GameEvent) => {
       switch (ev) {
         case "attack": SFX.attack(); break;
@@ -57,17 +75,18 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
         case "special": SFX.special(); break;
         case "bossIntro":
           SFX.bossIntro();
-          pausedRef.current = true;
-          setEduFact(BOSS_INTRO_FACT);
+          showNextQuiz();
           break;
         case "bossShoot": SFX.bossShoot(); break;
         case "waveClear":
           SFX.waveClear();
-          pausedRef.current = true;
-          setEduFact(EDU_FACTS[factIdxRef.current % EDU_FACTS.length]);
-          factIdxRef.current++;
+          showNextQuiz();
           break;
-        case "win": SFX.win(); break;
+        case "win":
+          SFX.win();
+          // Unlock stage 2 if just finished stage 1
+          if (stateRef.current.stage === 1) saveSettings({ stage2Unlocked: true });
+          break;
         case "lose": SFX.lose(); break;
       }
     };
@@ -93,7 +112,6 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
       const h = canvas.clientHeight;
       renderGame(ctx, stateRef.current, w, h);
 
-      // re-render React HUD periodically
       if (Math.floor(now / 100) !== Math.floor((now - dt * 1000) / 100)) {
         force((x) => x + 1);
       }
@@ -116,9 +134,16 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
     };
   }, [onWin, onLose, read]);
 
-  const closeEdu = () => {
-    SFX.click();
-    setEduFact(null);
+  const handleQuizAnswered = (correct: boolean) => {
+    if (correct) {
+      SFX.correct();
+      addHeartReward(stateRef.current);
+      // small delayed bonus chime
+      setTimeout(() => SFX.hpUp(), 250);
+    } else {
+      SFX.wrong();
+    }
+    setQuiz(null);
     pausedRef.current = false;
   };
 
@@ -126,6 +151,7 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
     const next = !muted;
     setMuted(next);
     setMutedState(next);
+    saveSettings({ muted: next });
     if (!next) SFX.click();
   };
 
@@ -177,8 +203,8 @@ export function GameScreen({ onWin, onLose }: GameScreenProps) {
         </div>
       )}
 
-      {/* Edu popup overlay (pauses game) */}
-      {eduFact && <EduPopup fact={eduFact} onClose={closeEdu} />}
+      {/* Quiz overlay (pauses game) */}
+      {quiz && <QuizPopup question={quiz} onAnswered={handleQuizAnswered} />}
     </div>
   );
 }
