@@ -1,17 +1,19 @@
 import {
   BOTTLE_BEAST,
   COCONUT_TREE,
+  GHOST_NET,
   HERO_ATTACK,
   HERO_IDLE,
   HERO_WALK,
   LITTER_KING,
+  NET_MASTER,
+  OIL_SLICK,
   PAL,
-  SPARKLE,
   TRASH_GOBLIN,
   TRASH_PROJ,
   drawSprite,
 } from "./sprites";
-import { ARENA_H, ARENA_W, GameState } from "./types";
+import { ARENA_H, ARENA_W, GameState, STAGE_CONFIGS } from "./types";
 
 const SCALE = 2; // pixel sprite scale within arena
 
