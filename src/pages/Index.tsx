@@ -1,16 +1,61 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { Cutscene } from "@/components/game/Cutscene";
+import { EndScreen } from "@/components/game/EndScreen";
+import { GameScreen } from "@/components/game/GameScreen";
+import { TitleScreen } from "@/components/game/TitleScreen";
+import type { GameScene } from "@/game/types";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [scene, setScene] = useState<GameScene>("title");
+  // gameKey forces a fresh GameScreen mount (resets state) when restarting
+  const [gameKey, setGameKey] = useState(0);
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <main className="fixed inset-0 h-[100dvh] w-screen overflow-hidden bg-background">
+      <h1 className="sr-only">Derawan Hero — Game Edukasi Pulau Derawan</h1>
+
+      {scene === "title" && <TitleScreen onStart={() => setScene("cutscene")} />}
+
+      {scene === "cutscene" && (
+        <Cutscene
+          onFinish={() => {
+            setGameKey((k) => k + 1);
+            setScene("playing");
+          }}
+        />
+      )}
+
+      {scene === "playing" && (
+        <GameScreen
+          key={gameKey}
+          onWin={() => setScene("win")}
+          onLose={() => setScene("gameover")}
+        />
+      )}
+
+      {scene === "win" && (
+        <EndScreen
+          variant="win"
+          onRestart={() => {
+            setGameKey((k) => k + 1);
+            setScene("playing");
+          }}
+          onMenu={() => setScene("title")}
+        />
+      )}
+
+      {scene === "gameover" && (
+        <EndScreen
+          variant="lose"
+          onRestart={() => {
+            setGameKey((k) => k + 1);
+            setScene("playing");
+          }}
+          onMenu={() => setScene("title")}
+        />
+      )}
+    </main>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
