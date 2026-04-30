@@ -119,20 +119,22 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
   if (state.boss.active && !state.boss.defeated) {
     const b = state.boss;
     const intro = b.introTimer > 0;
+    const bossSprite = state.stage === 2 ? NET_MASTER : LITTER_KING;
+    const auraColor = state.stage === 2 ? "rgba(122,223,255,0.4)" : "rgba(184, 107, 255, 0.4)";
     items.push({
       y: b.pos.y - 100,
       draw: () => {
         const wob = Math.sin(state.time * 3) * 2;
-        const sx = b.pos.x - (LITTER_KING[0].length * SCALE) / 2;
-        const sy = b.pos.y - LITTER_KING.length * SCALE + 8 + wob;
+        const sx = b.pos.x - (bossSprite[0].length * SCALE) / 2;
+        const sy = b.pos.y - bossSprite.length * SCALE + 8 + wob;
         if (b.hurtTimer > 0) {
           ctx.globalCompositeOperation = "source-over";
-          drawSpriteTinted(ctx, LITTER_KING, sx, sy, SCALE, "#ffffff");
+          drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#ffffff");
         } else {
-          drawSprite(ctx, LITTER_KING, sx, sy, SCALE);
+          drawSprite(ctx, bossSprite, sx, sy, SCALE);
         }
         if (intro) {
-          ctx.fillStyle = "rgba(184, 107, 255, 0.4)";
+          ctx.fillStyle = auraColor;
           ctx.beginPath();
           ctx.arc(b.pos.x, b.pos.y, 50 + Math.sin(state.time * 10) * 10, 0, Math.PI * 2);
           ctx.fill();
@@ -146,7 +148,11 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
     items.push({
       y: e.pos.y,
       draw: () => {
-        const sprite = e.kind === "goblin" ? TRASH_GOBLIN : BOTTLE_BEAST;
+        const sprite =
+          e.kind === "goblin" ? TRASH_GOBLIN
+          : e.kind === "beast" ? BOTTLE_BEAST
+          : e.kind === "ghostnet" ? GHOST_NET
+          : OIL_SLICK;
         const sx = e.pos.x - (sprite[0].length * SCALE) / 2;
         const sy = e.pos.y - sprite.length * SCALE + 4;
         // shadow
@@ -217,10 +223,78 @@ function drawForegroundEffects(ctx: CanvasRenderingContext2D, state: GameState) 
   if (state.boss.active && !state.boss.defeated && state.boss.introTimer > 0) {
     ctx.fillStyle = "rgba(0,0,0,0.5)";
     ctx.fillRect(0, ARENA_H / 2 - 18, ARENA_W, 36);
-    ctx.fillStyle = "#ff5577";
+    ctx.fillStyle = state.stage === 2 ? "#7adfff" : "#ff5577";
     ctx.font = "bold 14px 'Press Start 2P', monospace";
     ctx.textAlign = "center";
-    ctx.fillText("LITTER KING!", ARENA_W / 2, ARENA_H / 2 + 4);
+    ctx.fillText(STAGE_CONFIGS[state.stage].bossName + "!", ARENA_W / 2, ARENA_H / 2 + 4);
+  }
+}
+
+function drawBackgroundUnderwater(ctx: CanvasRenderingContext2D, state: GameState) {
+  const pol = state.pollution / 100;
+  // Deep ocean gradient — gets darker / muddier with pollution
+  const top = state.boss.active ? "#0a3a5a" : interp("#1c6fa8", "#1a3a5a", pol);
+  const bot = state.boss.active ? "#031426" : interp("#0a4a78", "#08203a", pol);
+  const grad = ctx.createLinearGradient(0, 0, 0, ARENA_H);
+  grad.addColorStop(0, top);
+  grad.addColorStop(1, bot);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, ARENA_W, ARENA_H);
+
+  // Light shafts from surface
+  const t = state.time;
+  ctx.fillStyle = `rgba(190, 240, 255, ${0.08 - pol * 0.06})`;
+  for (let i = 0; i < 4; i++) {
+    const x = (i * 130 + Math.sin(t * 0.5 + i) * 10) % ARENA_W;
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x + 30, 0);
+    ctx.lineTo(x + 60, ARENA_H);
+    ctx.lineTo(x + 10, ARENA_H);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Bubbles
+  ctx.fillStyle = "rgba(255,255,255,0.5)";
+  for (let i = 0; i < 14; i++) {
+    const bx = (i * 53 + Math.sin(t + i) * 12) % ARENA_W;
+    const by = (ARENA_H - ((t * 18 + i * 31) % ARENA_H));
+    const r = (i % 3) + 1;
+    ctx.beginPath();
+    ctx.arc(bx, by, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Coral reef silhouettes at bottom
+  const coralColors = ["#ff7aa8", "#ffb86b", "#a86bff", "#6bd9ff"];
+  for (let i = 0; i < 8; i++) {
+    const cx = i * 65 + 20;
+    const cy = ARENA_H - 12;
+    ctx.fillStyle = coralColors[i % coralColors.length];
+    ctx.globalAlpha = 0.7 - pol * 0.4;
+    // simple coral blob
+    for (let j = 0; j < 5; j++) {
+      const r = 6 - j;
+      ctx.fillRect(cx - r, cy - j * 3, r * 2, 3);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Sea floor
+  ctx.fillStyle = interp("#3a2a18", "#1a1208", pol);
+  ctx.fillRect(0, ARENA_H - 6, ARENA_W, 6);
+
+  // Pollution oil patches floating
+  if (pol > 0.3) {
+    ctx.fillStyle = `rgba(20, 5, 30, ${(pol - 0.3) * 0.7})`;
+    for (let i = 0; i < 5; i++) {
+      const cx = ((i * 97 + Math.floor(t * 6)) % ARENA_W);
+      const cy = 30 + (i * 19) % 60;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, 22, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 }
 
