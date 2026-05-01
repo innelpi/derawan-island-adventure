@@ -203,14 +203,23 @@ export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScre
       <canvas ref={canvasRef} className="block h-full w-full" />
       <Hud state={stateRef.current} />
 
-      {/* Mute toggle */}
-      <button
-        onClick={toggleMute}
-        aria-label={muted ? "Aktifkan suara" : "Matikan suara"}
-        className="pixel-btn absolute right-3 top-3 z-30 rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
-      >
-        {muted ? "🔇" : "🔊"}
-      </button>
+      {/* Top-right buttons */}
+      <div className="absolute right-3 top-3 z-30 flex gap-2">
+        <button
+          onClick={togglePause}
+          aria-label="Jeda permainan"
+          className="pixel-btn rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
+        >
+          ⏸
+        </button>
+        <button
+          onClick={toggleMute}
+          aria-label={muted ? "Aktifkan suara" : "Matikan suara"}
+          className="pixel-btn rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
+      </div>
 
       {/* Touch controls */}
       {isMobile && (
