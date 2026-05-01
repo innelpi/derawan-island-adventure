@@ -1,10 +1,12 @@
 import { GameState, STAGE_CONFIGS } from "@/game/types";
+import { loadSettings } from "@/game/settings";
 
 interface HudProps {
   state: GameState;
 }
 
 export function Hud({ state }: HudProps) {
+  const playerName = loadSettings().playerName || "Pahlawan";
   const hearts = Array.from({ length: state.hero.maxHp }, (_, i) => i < state.hero.hp);
   const pollutionColor =
     state.pollution < 50
@@ -16,8 +18,12 @@ export function Hud({ state }: HudProps) {
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-col gap-2 p-3 sm:p-4">
       <div className="flex items-start justify-between gap-3">
-        {/* Hearts */}
-        <div className="flex gap-1.5">
+        {/* Hearts + name */}
+        <div className="flex flex-col gap-1">
+          <span className="rounded border-2 border-foreground bg-card px-1.5 py-0.5 font-pixel text-[8px] text-foreground sm:text-[9px] truncate max-w-[110px]">
+            👤 {playerName}
+          </span>
+          <div className="flex gap-1.5">
           {hearts.map((on, i) => (
             <div
               key={i}
@@ -29,6 +35,7 @@ export function Hud({ state }: HudProps) {
               <HeartIcon full={on} />
             </div>
           ))}
+          </div>
         </div>
 
         {/* Pollution meter */}
