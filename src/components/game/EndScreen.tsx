@@ -1,4 +1,5 @@
 import type { StageId } from "@/game/types";
+import { loadSettings } from "@/game/settings";
 
 interface EndScreenProps {
   variant: "win" | "lose";
@@ -44,7 +45,7 @@ function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; 
             💡 Pesan Edukasi
           </div>
           <p className="font-body text-sm leading-relaxed text-card-foreground sm:text-base">
-            <strong>Pahlawan!</strong> {message}
+            <strong>{loadSettings().playerName || "Pahlawan"}!</strong> {message}
           </p>
         </div>
 
@@ -101,10 +102,10 @@ function LoseScreen({ onRestart, onMenu }: { onRestart: () => void; onMenu: () =
         </h2>
         <div className="rounded-md border-4 border-foreground bg-card p-5 shadow-pixel-lg">
           <p className="font-body text-base text-card-foreground sm:text-lg">
-            Yah, pantainya belum bersih...
+            Yah, {loadSettings().playerName || "Pahlawan"}, pantainya belum bersih...
           </p>
           <p className="mt-2 font-body text-sm text-muted-foreground">
-            Coba lagi ya, Pahlawan! 💪
+            Tora si penyu masih percaya kamu! Coba lagi ya 💪
           </p>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row">

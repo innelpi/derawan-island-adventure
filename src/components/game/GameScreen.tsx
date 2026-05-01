@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ActionButton, VirtualJoystick } from "./Controls";
 import { Hud } from "./Hud";
+import { PauseOverlay } from "./PauseOverlay";
 import { QuizPopup } from "./QuizPopup";
 import { SFX, isMuted, setMuted, setSfxVolume, unlockAudio } from "@/game/audio";
 import { addHeartReward, updateGame } from "@/game/engine";
+import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
 import { QuizQuestion, shuffleQuiz } from "@/game/quiz";
 import { renderGame } from "@/game/render";
 import { loadSettings, saveSettings } from "@/game/settings";
@@ -14,9 +16,11 @@ interface GameScreenProps {
   stage: StageId;
   onWin: () => void;
   onLose: () => void;
+  onMenu: () => void;
+  onRestart: () => void;
 }
 
-export function GameScreen({ stage, onWin, onLose }: GameScreenProps) {
+export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScreenProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const stateRef = useRef<GameState>(makeInitialState(stage));
@@ -25,18 +29,57 @@ export function GameScreen({ stage, onWin, onLose }: GameScreenProps) {
   const [, force] = useState(0);
   const [muted, setMutedState] = useState(isMuted());
   const [quiz, setQuiz] = useState<QuizQuestion | null>(null);
+  const [paused, setPaused] = useState(false);
   const pausedRef = useRef(false);
   const quizPoolRef = useRef<QuizQuestion[]>(shuffleQuiz());
   const quizIdxRef = useRef(0);
   const isMobile = typeof window !== "undefined" && "ontouchstart" in window;
 
-  // Apply user audio settings on mount
+  // Apply user audio settings on mount + start stage music
   useEffect(() => {
     const s = loadSettings();
     setSfxVolume(s.sfxVolume);
+    setMusicVolume(s.musicVolume);
     setMuted(s.muted);
+    setMusicMuted(s.muted);
     setMutedState(s.muted);
+    playMusic(stage === 2 ? "ocean" : "beach");
+    return () => {
+      // when leaving game, music control handed back to Index
+    };
+  }, [stage]);
+
+  // ESC / P → toggle pause
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "p" || e.key === "P") {
+        e.preventDefault();
+        togglePause();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Pause when tab hidden — game state preserved
+  useEffect(() => {
+    const onVis = () => {
+      if (document.hidden && !pausedRef.current) {
+        pausedRef.current = true;
+        setPaused(true);
+      }
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, []);
+
+  const togglePause = () => {
+    const next = !pausedRef.current;
+    pausedRef.current = next;
+    setPaused(next);
+    SFX.click();
+  };
 
   useEffect(() => {
     unlockAudio();
@@ -150,6 +193,7 @@ export function GameScreen({ stage, onWin, onLose }: GameScreenProps) {
   const toggleMute = () => {
     const next = !muted;
     setMuted(next);
+    setMusicMuted(next);
     setMutedState(next);
     saveSettings({ muted: next });
     if (!next) SFX.click();
@@ -160,14 +204,23 @@ export function GameScreen({ stage, onWin, onLose }: GameScreenProps) {
       <canvas ref={canvasRef} className="block h-full w-full" />
       <Hud state={stateRef.current} />
 
-      {/* Mute toggle */}
-      <button
-        onClick={toggleMute}
-        aria-label={muted ? "Aktifkan suara" : "Matikan suara"}
-        className="pixel-btn absolute right-3 top-3 z-30 rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
-      >
-        {muted ? "🔇" : "🔊"}
-      </button>
+      {/* Top-right buttons */}
+      <div className="absolute right-3 top-3 z-30 flex gap-2">
+        <button
+          onClick={togglePause}
+          aria-label="Jeda permainan"
+          className="pixel-btn rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
+        >
+          ⏸
+        </button>
+        <button
+          onClick={toggleMute}
+          aria-label={muted ? "Aktifkan suara" : "Matikan suara"}
+          className="pixel-btn rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
+        >
+          {muted ? "🔇" : "🔊"}
+        </button>
+      </div>
 
       {/* Touch controls */}
       {isMobile && (
@@ -205,6 +258,23 @@ export function GameScreen({ stage, onWin, onLose }: GameScreenProps) {
 
       {/* Quiz overlay (pauses game) */}
       {quiz && <QuizPopup question={quiz} onAnswered={handleQuizAnswered} />}
+
+      {/* Pause overlay */}
+      {paused && !quiz && (
+        <PauseOverlay
+          onResume={togglePause}
+          onRestart={() => {
+            setPaused(false);
+            pausedRef.current = false;
+            onRestart();
+          }}
+          onMenu={() => {
+            setPaused(false);
+            pausedRef.current = false;
+            onMenu();
+          }}
+        />
+      )}
     </div>
   );
 }
