@@ -193,6 +193,7 @@ export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScre
   const toggleMute = () => {
     const next = !muted;
     setMuted(next);
+    setMusicMuted(next);
     setMutedState(next);
     saveSettings({ muted: next });
     if (!next) SFX.click();
