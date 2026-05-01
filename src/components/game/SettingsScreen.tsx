@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SFX, setMuted, setSfxVolume } from "@/game/audio";
+import { setMusicMuted, setMusicVolume } from "@/game/music";
 import { loadSettings, saveSettings } from "@/game/settings";
 
 interface SettingsScreenProps {
@@ -21,12 +22,14 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
   };
   const updateMusic = (v: number) => {
     setMusic(v);
+    setMusicVolume(v);
     saveSettings({ musicVolume: v });
   };
   const toggleMute = () => {
     const next = !muted;
     setMutedLocal(next);
     setMuted(next);
+    setMusicMuted(next);
     saveSettings({ muted: next });
   };
 
@@ -65,7 +68,7 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
             className="w-full rounded border-4 border-foreground bg-background px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary"
           />
           <p className="font-body text-xs text-muted-foreground">
-            Maksimal 14 karakter. Akan muncul di awal stage.
+            Maksimal 14 karakter. Nama kamu akan dipakai di dialog & layar kemenangan!
           </p>
         </div>
 
@@ -117,7 +120,7 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
             className="w-full accent-primary"
           />
           <p className="font-body text-[10px] text-muted-foreground">
-            (Musik latar coming soon — pengaturan disimpan)
+            🎵 Musik chiptune santai untuk menemanimu menjelajah Derawan.
           </p>
         </div>
 
