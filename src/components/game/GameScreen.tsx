@@ -257,6 +257,23 @@ export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScre
 
       {/* Quiz overlay (pauses game) */}
       {quiz && <QuizPopup question={quiz} onAnswered={handleQuizAnswered} />}
+
+      {/* Pause overlay */}
+      {paused && !quiz && (
+        <PauseOverlay
+          onResume={togglePause}
+          onRestart={() => {
+            setPaused(false);
+            pausedRef.current = false;
+            onRestart();
+          }}
+          onMenu={() => {
+            setPaused(false);
+            pausedRef.current = false;
+            onMenu();
+          }}
+        />
+      )}
     </div>
   );
 }
