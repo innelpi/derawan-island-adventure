@@ -128,8 +128,11 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
     const b = state.boss;
     const intro = b.introTimer > 0;
     const useImage = state.stage === 1 && litterKingReady;
-    const bossSprite = state.stage === 2 ? NET_MASTER : LITTER_KING;
-    const auraColor = state.stage === 2 ? "rgba(122,223,255,0.4)" : "rgba(184, 107, 255, 0.4)";
+    const bossSprite = state.stage === 1 ? LITTER_KING : NET_MASTER;
+    const auraColor =
+      state.stage === 1 ? "rgba(184, 107, 255, 0.4)"
+      : state.stage === 2 ? "rgba(122,223,255,0.4)"
+      : "rgba(255, 80, 220, 0.5)";
     items.push({
       y: b.pos.y - 100,
       draw: () => {
