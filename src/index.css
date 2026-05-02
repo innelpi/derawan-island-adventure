@@ -219,11 +219,16 @@
   }
   .cloud-drift { animation: cloud-drift 60s linear infinite; }
 
-  @keyframes fish-swim {
-    0% { transform: translateX(-10vw); }
-    100% { transform: translateX(110vw); }
+  @keyframes fish-swim-right {
+    0% { transform: translateX(-15vw); }
+    100% { transform: translateX(115vw); }
   }
-  .fish-swim { animation: fish-swim 16s linear infinite; }
+  @keyframes fish-swim-left {
+    0% { transform: translateX(115vw); }
+    100% { transform: translateX(-15vw); }
+  }
+  .fish-swim-right { animation: fish-swim-right 16s linear infinite; }
+  .fish-swim-left  { animation: fish-swim-left 16s linear infinite; }
 
   @keyframes sparkle-pulse {
     0%, 100% { opacity: 0; transform: scale(0.6); }
