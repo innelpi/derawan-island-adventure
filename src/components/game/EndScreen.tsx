@@ -93,9 +93,9 @@ function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; 
           </button>
         </div>
 
-        {!isStage1 && (
+        {isFinal && (
           <p className="text-center font-body text-xs text-muted-foreground">
-            🎉 Kamu sudah menamatkan semua stage MVP! Mantap, Pahlawan!
+            🎉 Kamu sudah menamatkan SEMUA stage Derawan Hero! Pahlawan sejati! 🏆
           </p>
         )}
       </div>
