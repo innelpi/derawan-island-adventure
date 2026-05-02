@@ -55,7 +55,8 @@ export function renderGame(
     ctx.translate((Math.random() - 0.5) * state.shake * 8, (Math.random() - 0.5) * state.shake * 8);
   }
 
-  if (state.stage === 2) drawBackgroundUnderwater(ctx, state);
+  if (state.stage === 3) drawBackgroundDeepSea(ctx, state);
+  else if (state.stage === 2) drawBackgroundUnderwater(ctx, state);
   else drawBackground(ctx, state);
   drawEntities(ctx, state);
   drawForegroundEffects(ctx, state);
