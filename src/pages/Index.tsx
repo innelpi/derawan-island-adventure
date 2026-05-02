@@ -90,7 +90,9 @@ const Index = () => {
           onRestart={restartCurrent}
           onMenu={() => setScene("title")}
           onNextStage={
-            stage === 1 ? () => startStage(2) : undefined
+            stage === 1 ? () => startStage(2)
+            : stage === 2 ? () => startStage(3)
+            : undefined
           }
         />
       )}
