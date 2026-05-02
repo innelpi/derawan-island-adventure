@@ -384,7 +384,7 @@ function drawBackgroundDeepSea(ctx: CanvasRenderingContext2D, state: GameState) 
   ctx.fillRect(400, ARENA_H - 12, 4, 4);
 }
 
-
+function drawSpriteTinted(
   ctx: CanvasRenderingContext2D,
   sprite: string[],
   x: number,
