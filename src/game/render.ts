@@ -262,7 +262,7 @@ function drawForegroundEffects(ctx: CanvasRenderingContext2D, state: GameState) 
   if (state.boss.active && !state.boss.defeated && state.boss.introTimer > 0) {
     ctx.fillStyle = "rgba(0,0,0,0.5)";
     ctx.fillRect(0, ARENA_H / 2 - 18, ARENA_W, 36);
-    ctx.fillStyle = state.stage === 2 ? "#7adfff" : "#ff5577";
+    ctx.fillStyle = state.stage === 2 ? "#7adfff" : state.stage === 3 ? "#ff5cdc" : "#ff5577";
     ctx.font = "bold 14px 'Press Start 2P', monospace";
     ctx.textAlign = "center";
     ctx.fillText(STAGE_CONFIGS[state.stage].bossName + "!", ARENA_W / 2, ARENA_H / 2 + 4);
