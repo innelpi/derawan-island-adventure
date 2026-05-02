@@ -196,6 +196,80 @@
   }
   .bg-sway { animation: bg-sway 6s ease-in-out infinite; }
 
+  /* === SAVAGE TITLE SCREEN === */
+  @keyframes wave-slide-slow {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes wave-slide-mid {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes wave-slide-fast {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .wave-slide-slow { animation: wave-slide-slow 22s linear infinite; }
+  .wave-slide-mid  { animation: wave-slide-mid 14s linear infinite; }
+  .wave-slide-fast { animation: wave-slide-fast 9s linear infinite; }
+
+  @keyframes cloud-drift {
+    0% { transform: translateX(-15vw); }
+    100% { transform: translateX(115vw); }
+  }
+  .cloud-drift { animation: cloud-drift 60s linear infinite; }
+
+  @keyframes fish-swim {
+    0% { transform: translateX(-10vw); }
+    100% { transform: translateX(110vw); }
+  }
+  .fish-swim { animation: fish-swim 16s linear infinite; }
+
+  @keyframes sparkle-pulse {
+    0%, 100% { opacity: 0; transform: scale(0.6); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+  .sparkle { animation: sparkle-pulse 3s ease-in-out infinite; }
+
+  @keyframes title-letter-pop {
+    0% { transform: translateY(-30px) scale(0.4) rotate(-15deg); opacity: 0; }
+    60% { transform: translateY(6px) scale(1.15) rotate(3deg); opacity: 1; }
+    100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+  }
+  .title-letter {
+    animation: title-letter-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  @keyframes title-pop-in {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .title-pop { animation: title-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+  @keyframes shine-sweep {
+    0% { transform: translateX(-150%) skewX(-20deg); }
+    100% { transform: translateX(250%) skewX(-20deg); }
+  }
+  .shine-bar {
+    position: absolute;
+    top: 0; left: 0;
+    width: 30%; height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(0,0%,100%,0.5), transparent);
+    animation: shine-sweep 3.5s ease-in-out infinite;
+  }
+
+  @keyframes menu-btn-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+  }
+  .menu-btn { animation: menu-btn-float 2.6s ease-in-out infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wave-slide-slow, .wave-slide-mid, .wave-slide-fast,
+    .cloud-drift, .fish-swim, .sparkle, .menu-btn,
+    .shine-bar { animation: none; }
+  }
+
   .animate-wave { animation: wave 2s ease-in-out infinite; }
   .animate-bob { animation: bob 1.6s ease-in-out infinite; }
   .animate-shake { animation: shake 0.4s ease-in-out infinite; }
