@@ -10,9 +10,10 @@ interface StageSelectProps {
 export function StageSelect({ onPick, onBack }: StageSelectProps) {
   const settings = loadSettings();
   const stage2Locked = !settings.stage2Unlocked;
+  const stage3Locked = !settings.stage3Unlocked;
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center gap-6 overflow-hidden bg-gradient-to-b from-sky to-sea-deep p-6">
+    <div className="relative flex h-full w-full flex-col items-center justify-center gap-6 overflow-y-auto bg-gradient-to-b from-sky to-sea-deep p-6">
       <button
         onClick={() => {
           SFX.click();
@@ -30,7 +31,7 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
         Halo, <strong>{settings.playerName}</strong>! Kamu mau jadi pahlawan di mana hari ini?
       </p>
 
-      <div className="grid w-full max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="grid w-full max-w-3xl grid-cols-1 gap-4 sm:grid-cols-3">
         <StageCard
           number={1}
           title="Pantai Derawan"
@@ -55,11 +56,24 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
             onPick(2);
           }}
         />
+        <StageCard
+          number={3}
+          title="Laut Dalam"
+          desc="Hadapi sang Plastic Tyrant di palung gelap, akhiri pencemaran selamanya!"
+          gradient="from-trash to-sea-deep"
+          emoji="🌌"
+          locked={stage3Locked}
+          onClick={() => {
+            if (stage3Locked) return;
+            SFX.click();
+            onPick(3);
+          }}
+        />
       </div>
 
-      {stage2Locked && (
-        <p className="font-body text-xs text-card-foreground/80">
-          🔒 Stage 2 terbuka setelah kamu menyelesaikan Stage 1!
+      {(stage2Locked || stage3Locked) && (
+        <p className="font-body text-xs text-card-foreground/80 text-center">
+          🔒 Selesaikan stage sebelumnya untuk membuka stage berikutnya!
         </p>
       )}
     </div>

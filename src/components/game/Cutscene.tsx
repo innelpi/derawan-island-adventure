@@ -97,8 +97,43 @@ const PANELS_STAGE2: Panel[] = [
   },
 ];
 
+const PANELS_STAGE3: Panel[] = [
+  {
+    bg: "from-sea-deep via-trash to-foreground",
+    speaker: "narrator",
+    text: () => `Jauh di palung gelap Derawan, sumber semua pencemaran bersembunyi… seekor raksasa dari plastik bertahun-tahun lamanya.`,
+    showHero: true,
+    emoji: "🌌",
+  },
+  {
+    bg: "from-foreground via-trash to-trash-glow",
+    speaker: "turtle",
+    text: (n) => `${n}, ini misi terakhirmu. Kalau Plastic Tyrant kalah, laut Derawan akan benar-benar pulih untuk selamanya.`,
+    showHero: true,
+    showTurtle: true,
+    emoji: "🐢",
+  },
+  {
+    bg: "from-trash via-destructive to-trash-glow",
+    speaker: "hero",
+    text: () => `Aku sudah bersihkan pantai dan terumbunya. Sekarang giliran sumbernya. Aku takut… tapi aku harus berani!`,
+    showHero: true,
+    showDark: true,
+    emoji: "💧",
+  },
+  {
+    bg: "from-trash-glow via-destructive to-foreground",
+    speaker: "hero",
+    text: (n) => `Demi Tora, demi semua ikan, demi Pulau Derawan… ${n} siap! AYO HABISI PLASTIC TYRANT! ⚡`,
+    showHero: true,
+    showFist: true,
+    showDark: true,
+    emoji: "⚡",
+  },
+];
+
 export function Cutscene({ onFinish, stage = 1 }: CutsceneProps) {
-  const PANELS = stage === 2 ? PANELS_STAGE2 : PANELS_STAGE1;
+  const PANELS = stage === 3 ? PANELS_STAGE3 : stage === 2 ? PANELS_STAGE2 : PANELS_STAGE1;
   const playerName = loadSettings().playerName || "Pahlawan";
   const [idx, setIdx] = useState(0);
   const panel = PANELS[idx];

@@ -5,6 +5,7 @@ export interface UserSettings {
   sfxVolume: number; // 0..1
   muted: boolean;
   stage2Unlocked: boolean;
+  stage3Unlocked: boolean;
 }
 
 const KEY = "derawan-hero:settings";
@@ -15,6 +16,7 @@ const DEFAULTS: UserSettings = {
   sfxVolume: 0.6,
   muted: false,
   stage2Unlocked: false,
+  stage3Unlocked: false,
 };
 
 let cache: UserSettings | null = null;
@@ -43,4 +45,8 @@ export function saveSettings(patch: Partial<UserSettings>) {
 
 export function unlockStage2() {
   saveSettings({ stage2Unlocked: true });
+}
+
+export function unlockStage3() {
+  saveSettings({ stage3Unlocked: true });
 }

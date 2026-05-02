@@ -38,7 +38,8 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         top: 62 + ((i * 11) % 20),
         delay: i * 1.6,
         duration: 14 + ((i * 3) % 8),
-        flip: i % 2 === 0,
+        // arah berenang: true = kanan (default), false = kiri (perlu di-flip + animasi balik)
+        goesRight: i % 2 === 0,
         color: ["hsl(15,90%,60%)", "hsl(45,95%,60%)", "hsl(195,90%,55%)", "hsl(330,80%,65%)", "hsl(280,70%,65%)"][i],
       })),
     []
@@ -181,20 +182,21 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {fish.map((f, i) => (
           <div
             key={i}
-            className="absolute fish-swim"
+            className={f.goesRight ? "absolute fish-swim-right" : "absolute fish-swim-left"}
             style={{
               top: `${f.top}%`,
               animationDuration: `${f.duration}s`,
               animationDelay: `${f.delay}s`,
-              transform: f.flip ? "scaleX(-1)" : undefined,
             }}
           >
-            <svg width="28" height="14" viewBox="0 0 28 14">
-              <ellipse cx="10" cy="7" rx="9" ry="5" fill={f.color} />
-              <polygon points="19,7 27,2 27,12" fill={f.color} />
-              <circle cx="6" cy="6" r="1.2" fill="white" />
-              <circle cx="6" cy="6" r="0.6" fill="hsl(220,40%,15%)" />
-            </svg>
+            <div style={{ transform: f.goesRight ? undefined : "scaleX(-1)" }}>
+              <svg width="28" height="14" viewBox="0 0 28 14" shapeRendering="crispEdges">
+                <ellipse cx="10" cy="7" rx="9" ry="5" fill={f.color} />
+                <polygon points="19,7 27,2 27,12" fill={f.color} />
+                <circle cx="6" cy="6" r="1.2" fill="white" />
+                <circle cx="6" cy="6" r="0.6" fill="hsl(220,40%,15%)" />
+              </svg>
+            </div>
           </div>
         ))}
       </div>
@@ -225,72 +227,94 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         </svg>
       </div>
 
-      {/* ============ PALM TREES ============ */}
+      {/* ============ PALM TREES (akar nempel pasir) ============ */}
       {/* LEFT PALM */}
-      <div className="absolute bottom-[12%] left-[6%] sm:left-[10%]" style={{ transformOrigin: "bottom center" }}>
-        <div className="palm-sway">
-          <svg width="140" height="240" viewBox="0 0 140 240" className="drop-shadow-[4px_4px_0_hsl(220,40%,15%,0.3)]">
-            {/* trunk segments */}
+      <div
+        className="absolute left-[4%] sm:left-[8%]"
+        style={{ bottom: "4%", transformOrigin: "bottom center" }}
+      >
+        <div className="palm-sway" style={{ transformOrigin: "bottom center" }}>
+          <svg
+            width="130"
+            height="260"
+            viewBox="0 0 130 260"
+            shapeRendering="crispEdges"
+            className="block drop-shadow-[3px_3px_0_hsl(220,40%,15%,0.35)]"
+          >
+            {/* trunk — pixel blocks dari atas sampai dasar (y=260) */}
             <g>
-              {Array.from({ length: 9 }).map((_, i) => (
-                <g key={i}>
-                  <rect x="62" y={60 + i * 20} width="20" height="18" fill="hsl(28,55%,32%)" />
-                  <rect x="60" y={60 + i * 20} width="4" height="18" fill="hsl(28,65%,22%)" />
-                  <rect x="78" y={60 + i * 20} width="4" height="18" fill="hsl(28,70%,42%)" />
-                  <rect x="62" y={76 + i * 20} width="20" height="2" fill="hsl(28,70%,18%)" />
-                </g>
-              ))}
+              {Array.from({ length: 11 }).map((_, i) => {
+                const y = 60 + i * 18;
+                return (
+                  <g key={i}>
+                    <rect x="56" y={y} width="18" height="18" fill="hsl(28,55%,32%)" />
+                    <rect x="54" y={y} width="4" height="18" fill="hsl(28,65%,22%)" />
+                    <rect x="72" y={y} width="4" height="18" fill="hsl(28,70%,42%)" />
+                    <rect x="56" y={y + 16} width="18" height="2" fill="hsl(28,70%,18%)" />
+                  </g>
+                );
+              })}
             </g>
             {/* coconuts */}
-            <circle cx="56" cy="60" r="7" fill="hsl(28,65%,18%)" />
-            <circle cx="86" cy="56" r="7" fill="hsl(28,65%,18%)" />
-            <circle cx="56" cy="60" r="2" fill="hsl(28,70%,35%)" />
-            {/* fronds */}
+            <rect x="46" y="56" width="10" height="10" fill="hsl(28,65%,18%)" />
+            <rect x="76" y="52" width="10" height="10" fill="hsl(28,65%,18%)" />
+            <rect x="48" y="58" width="3" height="3" fill="hsl(28,70%,38%)" />
+            {/* fronds — pixel ellipses */}
             <g fill="hsl(145,75%,32%)">
-              <ellipse cx="70" cy="50" rx="60" ry="14" transform="rotate(-25 70 50)" />
-              <ellipse cx="70" cy="50" rx="60" ry="14" transform="rotate(25 70 50)" />
-              <ellipse cx="70" cy="50" rx="55" ry="12" transform="rotate(-55 70 50)" />
-              <ellipse cx="70" cy="50" rx="55" ry="12" transform="rotate(55 70 50)" />
-              <ellipse cx="70" cy="50" rx="50" ry="10" transform="rotate(-85 70 50)" />
-              <ellipse cx="70" cy="50" rx="50" ry="10" transform="rotate(85 70 50)" />
+              <ellipse cx="65" cy="50" rx="58" ry="12" transform="rotate(-22 65 50)" />
+              <ellipse cx="65" cy="50" rx="58" ry="12" transform="rotate(22 65 50)" />
+              <ellipse cx="65" cy="50" rx="50" ry="10" transform="rotate(-55 65 50)" />
+              <ellipse cx="65" cy="50" rx="50" ry="10" transform="rotate(55 65 50)" />
+              <ellipse cx="65" cy="50" rx="42" ry="8" transform="rotate(-85 65 50)" />
+              <ellipse cx="65" cy="50" rx="42" ry="8" transform="rotate(85 65 50)" />
             </g>
             <g fill="hsl(145,80%,48%)">
-              <ellipse cx="70" cy="48" rx="40" ry="4" transform="rotate(-25 70 48)" />
-              <ellipse cx="70" cy="48" rx="40" ry="4" transform="rotate(25 70 48)" />
-              <ellipse cx="70" cy="48" rx="35" ry="3" transform="rotate(-55 70 48)" />
-              <ellipse cx="70" cy="48" rx="35" ry="3" transform="rotate(55 70 48)" />
+              <ellipse cx="65" cy="48" rx="38" ry="3" transform="rotate(-22 65 48)" />
+              <ellipse cx="65" cy="48" rx="38" ry="3" transform="rotate(22 65 48)" />
             </g>
           </svg>
         </div>
       </div>
 
       {/* RIGHT PALM */}
-      <div className="absolute bottom-[10%] right-[5%] sm:right-[8%]" style={{ transformOrigin: "bottom center" }}>
-        <div className="palm-sway-rev">
-          <svg width="160" height="270" viewBox="0 0 140 240" className="drop-shadow-[4px_4px_0_hsl(220,40%,15%,0.3)]">
+      <div
+        className="absolute right-[4%] sm:right-[7%]"
+        style={{ bottom: "3%", transformOrigin: "bottom center" }}
+      >
+        <div className="palm-sway-rev" style={{ transformOrigin: "bottom center" }}>
+          <svg
+            width="150"
+            height="290"
+            viewBox="0 0 130 260"
+            shapeRendering="crispEdges"
+            className="block drop-shadow-[3px_3px_0_hsl(220,40%,15%,0.35)]"
+          >
             <g>
-              {Array.from({ length: 10 }).map((_, i) => (
-                <g key={i}>
-                  <rect x="62" y={50 + i * 20} width="20" height="18" fill="hsl(28,55%,32%)" />
-                  <rect x="60" y={50 + i * 20} width="4" height="18" fill="hsl(28,65%,22%)" />
-                  <rect x="78" y={50 + i * 20} width="4" height="18" fill="hsl(28,70%,42%)" />
-                  <rect x="62" y={66 + i * 20} width="20" height="2" fill="hsl(28,70%,18%)" />
-                </g>
-              ))}
+              {Array.from({ length: 11 }).map((_, i) => {
+                const y = 60 + i * 18;
+                return (
+                  <g key={i}>
+                    <rect x="56" y={y} width="18" height="18" fill="hsl(28,55%,32%)" />
+                    <rect x="54" y={y} width="4" height="18" fill="hsl(28,65%,22%)" />
+                    <rect x="72" y={y} width="4" height="18" fill="hsl(28,70%,42%)" />
+                    <rect x="56" y={y + 16} width="18" height="2" fill="hsl(28,70%,18%)" />
+                  </g>
+                );
+              })}
             </g>
-            <circle cx="56" cy="50" r="7" fill="hsl(28,65%,18%)" />
-            <circle cx="86" cy="46" r="7" fill="hsl(28,65%,18%)" />
+            <rect x="46" y="56" width="10" height="10" fill="hsl(28,65%,18%)" />
+            <rect x="76" y="52" width="10" height="10" fill="hsl(28,65%,18%)" />
             <g fill="hsl(145,75%,32%)">
-              <ellipse cx="70" cy="40" rx="60" ry="14" transform="rotate(-25 70 40)" />
-              <ellipse cx="70" cy="40" rx="60" ry="14" transform="rotate(25 70 40)" />
-              <ellipse cx="70" cy="40" rx="55" ry="12" transform="rotate(-55 70 40)" />
-              <ellipse cx="70" cy="40" rx="55" ry="12" transform="rotate(55 70 40)" />
-              <ellipse cx="70" cy="40" rx="50" ry="10" transform="rotate(-85 70 40)" />
-              <ellipse cx="70" cy="40" rx="50" ry="10" transform="rotate(85 70 40)" />
+              <ellipse cx="65" cy="50" rx="58" ry="12" transform="rotate(-22 65 50)" />
+              <ellipse cx="65" cy="50" rx="58" ry="12" transform="rotate(22 65 50)" />
+              <ellipse cx="65" cy="50" rx="50" ry="10" transform="rotate(-55 65 50)" />
+              <ellipse cx="65" cy="50" rx="50" ry="10" transform="rotate(55 65 50)" />
+              <ellipse cx="65" cy="50" rx="42" ry="8" transform="rotate(-85 65 50)" />
+              <ellipse cx="65" cy="50" rx="42" ry="8" transform="rotate(85 65 50)" />
             </g>
             <g fill="hsl(145,80%,48%)">
-              <ellipse cx="70" cy="38" rx="40" ry="4" transform="rotate(-25 70 38)" />
-              <ellipse cx="70" cy="38" rx="40" ry="4" transform="rotate(25 70 38)" />
+              <ellipse cx="65" cy="48" rx="38" ry="3" transform="rotate(-22 65 48)" />
+              <ellipse cx="65" cy="48" rx="38" ry="3" transform="rotate(22 65 48)" />
             </g>
           </svg>
         </div>
@@ -372,7 +396,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
             <div className="relative">
               {/* shadow stack for 3D pixel look */}
               <h1
-                className="font-pixel text-3xl leading-tight sm:text-5xl md:text-6xl"
+                className="whitespace-nowrap font-pixel text-3xl leading-tight sm:text-5xl md:text-6xl"
                 style={{
                   color: "hsl(45,100%,65%)",
                   textShadow: `

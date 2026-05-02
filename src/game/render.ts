@@ -55,7 +55,8 @@ export function renderGame(
     ctx.translate((Math.random() - 0.5) * state.shake * 8, (Math.random() - 0.5) * state.shake * 8);
   }
 
-  if (state.stage === 2) drawBackgroundUnderwater(ctx, state);
+  if (state.stage === 3) drawBackgroundDeepSea(ctx, state);
+  else if (state.stage === 2) drawBackgroundUnderwater(ctx, state);
   else drawBackground(ctx, state);
   drawEntities(ctx, state);
   drawForegroundEffects(ctx, state);
@@ -127,8 +128,11 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
     const b = state.boss;
     const intro = b.introTimer > 0;
     const useImage = state.stage === 1 && litterKingReady;
-    const bossSprite = state.stage === 2 ? NET_MASTER : LITTER_KING;
-    const auraColor = state.stage === 2 ? "rgba(122,223,255,0.4)" : "rgba(184, 107, 255, 0.4)";
+    const bossSprite = state.stage === 1 ? LITTER_KING : NET_MASTER;
+    const auraColor =
+      state.stage === 1 ? "rgba(184, 107, 255, 0.4)"
+      : state.stage === 2 ? "rgba(122,223,255,0.4)"
+      : "rgba(255, 80, 220, 0.5)";
     items.push({
       y: b.pos.y - 100,
       draw: () => {
@@ -153,6 +157,15 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
           if (b.hurtTimer > 0) {
             ctx.globalCompositeOperation = "source-over";
             drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#ffffff");
+          } else if (state.stage === 3) {
+            // Plastic Tyrant: glow ungu di belakang + sprite biasa
+            ctx.save();
+            ctx.fillStyle = "rgba(255, 60, 220, 0.35)";
+            ctx.beginPath();
+            ctx.arc(b.pos.x, b.pos.y - 8, 38 + Math.sin(state.time * 4) * 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#c43cff");
           } else {
             drawSprite(ctx, bossSprite, sx, sy, SCALE);
           }
@@ -176,7 +189,9 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
           e.kind === "goblin" ? TRASH_GOBLIN
           : e.kind === "beast" ? BOTTLE_BEAST
           : e.kind === "ghostnet" ? GHOST_NET
-          : OIL_SLICK;
+          : e.kind === "oilslick" ? OIL_SLICK
+          : e.kind === "microplastic" ? TRASH_GOBLIN  // reuse, dirender lebih kecil
+          : GHOST_NET;                                // darkjelly: reuse ghostnet shape
         const sx = e.pos.x - (sprite[0].length * SCALE) / 2;
         const sy = e.pos.y - sprite.length * SCALE + 4;
         // shadow
@@ -247,7 +262,7 @@ function drawForegroundEffects(ctx: CanvasRenderingContext2D, state: GameState) 
   if (state.boss.active && !state.boss.defeated && state.boss.introTimer > 0) {
     ctx.fillStyle = "rgba(0,0,0,0.5)";
     ctx.fillRect(0, ARENA_H / 2 - 18, ARENA_W, 36);
-    ctx.fillStyle = state.stage === 2 ? "#7adfff" : "#ff5577";
+    ctx.fillStyle = state.stage === 2 ? "#7adfff" : state.stage === 3 ? "#ff5cdc" : "#ff5577";
     ctx.font = "bold 14px 'Press Start 2P', monospace";
     ctx.textAlign = "center";
     ctx.fillText(STAGE_CONFIGS[state.stage].bossName + "!", ARENA_W / 2, ARENA_H / 2 + 4);
@@ -320,6 +335,62 @@ function drawBackgroundUnderwater(ctx: CanvasRenderingContext2D, state: GameStat
       ctx.fill();
     }
   }
+}
+
+function drawBackgroundDeepSea(ctx: CanvasRenderingContext2D, state: GameState) {
+  const pol = state.pollution / 100;
+  // Palung gelap — ungu kehitaman
+  const top = state.boss.active ? "#1a0628" : interp("#2a0a4a", "#0a0218", pol);
+  const bot = state.boss.active ? "#04010a" : interp("#0a0218", "#020108", pol);
+  const grad = ctx.createLinearGradient(0, 0, 0, ARENA_H);
+  grad.addColorStop(0, top);
+  grad.addColorStop(1, bot);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, ARENA_W, ARENA_H);
+
+  const t = state.time;
+
+  // Plankton bercahaya (titik kecil glow)
+  ctx.fillStyle = "rgba(160, 220, 255, 0.7)";
+  for (let i = 0; i < 30; i++) {
+    const px = (i * 31 + Math.sin(t * 0.4 + i) * 8) % ARENA_W;
+    const py = (i * 17 + Math.cos(t * 0.3 + i) * 6) % ARENA_H;
+    const flicker = 0.4 + 0.6 * Math.abs(Math.sin(t * 2 + i));
+    ctx.globalAlpha = flicker * 0.8;
+    ctx.fillRect(px, py, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // Bayangan makhluk besar lewat di belakang
+  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  const shadowX = ((t * 18) % (ARENA_W + 200)) - 100;
+  ctx.beginPath();
+  ctx.ellipse(shadowX, 50, 60, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ranjau plastik / chunks melayang
+  ctx.fillStyle = `rgba(60, 20, 80, ${0.5 + pol * 0.3})`;
+  for (let i = 0; i < 6; i++) {
+    const cx = ((i * 79 + Math.floor(t * 4)) % ARENA_W);
+    const cy = 40 + ((i * 27) % 100);
+    ctx.fillRect(cx, cy, 4, 4);
+    ctx.fillRect(cx + 2, cy + 2, 3, 3);
+  }
+
+  // Lantai palung — pixel jagged
+  ctx.fillStyle = interp("#1a0a08", "#080404", pol);
+  ctx.fillRect(0, ARENA_H - 10, ARENA_W, 10);
+  ctx.fillStyle = "#2a1018";
+  for (let i = 0; i < 12; i++) {
+    const x = i * 40 + (i % 2) * 6;
+    ctx.fillRect(x, ARENA_H - 14, 8, 4);
+  }
+
+  // Vent merah glowing di dasar
+  ctx.fillStyle = `rgba(255, 80, 40, ${0.4 + Math.sin(t * 3) * 0.2})`;
+  ctx.fillRect(80, ARENA_H - 12, 4, 4);
+  ctx.fillRect(280, ARENA_H - 14, 4, 6);
+  ctx.fillRect(400, ARENA_H - 12, 4, 4);
 }
 
 function drawSpriteTinted(

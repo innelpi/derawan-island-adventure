@@ -15,16 +15,26 @@ export function EndScreen({ variant, stage = 1, onRestart, onMenu, onNextStage }
 }
 
 function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; onRestart: () => void; onMenu: () => void; onNextStage?: () => void }) {
-  const isStage1 = stage === 1;
-  const title = isStage1 ? "PANTAI KEMBALI BERSIH!" : "TERUMBU KARANG SELAMAT!";
-  const subtitle = isStage1 ? "STAGE 1 CLEAR" : "STAGE 2 CLEAR";
-  const message = isStage1
-    ? "Sampah kecil maupun besar sama bahayanya. Kalau terbawa ombak, butuh ratusan tahun untuk hancur dan bisa meracuni laut kita!"
-    : "Jaring hantu menjebak ribuan hewan laut tiap tahun, dan tumpahan oli bisa membunuh karang. Selalu jaga laut kita ya!";
-  const reward = isStage1 ? "Pecahan Kristal Terumbu" : "Mahkota Penjaga Karang";
-  const rewardDesc = isStage1
-    ? "Berguna untuk perjalanan ke Karang Derawan!"
-    : "Tanda kamu pahlawan sejati Pulau Derawan!";
+  const title =
+    stage === 1 ? "PANTAI KEMBALI BERSIH!"
+    : stage === 2 ? "TERUMBU KARANG SELAMAT!"
+    : "LAUT DERAWAN PULIH SELAMANYA!";
+  const subtitle = `STAGE ${stage} CLEAR`;
+  const message =
+    stage === 1
+      ? "Sampah kecil maupun besar sama bahayanya. Kalau terbawa ombak, butuh ratusan tahun untuk hancur dan bisa meracuni laut kita!"
+      : stage === 2
+      ? "Jaring hantu menjebak ribuan hewan laut tiap tahun, dan tumpahan oli bisa membunuh karang. Selalu jaga laut kita ya!"
+      : "Mikroplastik adalah musuh tak kasat mata — masuk ke ikan, lalu ke tubuh kita. Kurangi plastik sekali pakai mulai dari sekarang!";
+  const reward =
+    stage === 1 ? "Pecahan Kristal Terumbu"
+    : stage === 2 ? "Mahkota Penjaga Karang"
+    : "Cahaya Abadi Derawan";
+  const rewardDesc =
+    stage === 1 ? "Berguna untuk perjalanan ke Karang Derawan!"
+    : stage === 2 ? "Membuka jalan ke palung laut dalam!"
+    : "Tanda kamu PAHLAWAN SEJATI seluruh Pulau Derawan!";
+  const isFinal = stage === 3;
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center overflow-y-auto bg-gradient-to-b from-sky to-primary/30 p-4">
       {/* Sparkles */}
@@ -66,7 +76,7 @@ function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; 
               onClick={onNextStage}
               className="pixel-btn flex-1 rounded border-4 border-foreground bg-secondary px-4 py-3 font-pixel text-xs text-secondary-foreground shadow-pixel active:translate-y-1"
             >
-              ▶▶ STAGE 2
+              ▶▶ STAGE {stage + 1}
             </button>
           )}
           <button
@@ -83,9 +93,9 @@ function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; 
           </button>
         </div>
 
-        {!isStage1 && (
+        {isFinal && (
           <p className="text-center font-body text-xs text-muted-foreground">
-            🎉 Kamu sudah menamatkan semua stage MVP! Mantap, Pahlawan!
+            🎉 Kamu sudah menamatkan SEMUA stage Derawan Hero! Pahlawan sejati! 🏆
           </p>
         )}
       </div>

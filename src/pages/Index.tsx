@@ -6,7 +6,7 @@ import { SettingsScreen } from "@/components/game/SettingsScreen";
 import { StageSelect } from "@/components/game/StageSelect";
 import { TitleScreen } from "@/components/game/TitleScreen";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
-import { loadSettings } from "@/game/settings";
+import { loadSettings, unlockStage3 } from "@/game/settings";
 import type { GameScene, StageId } from "@/game/types";
 
 const Index = () => {
@@ -27,8 +27,10 @@ const Index = () => {
     if (scene === "title" || scene === "settings" || scene === "stageSelect") {
       playMusic("menu");
     } else if (scene === "cutscene") {
-      playMusic(stage === 2 ? "ocean" : "beach");
+      playMusic(stage === 1 ? "beach" : "ocean");
     } else if (scene === "win") {
+      // Unlock next stage when winning
+      if (stage === 2) unlockStage3();
       playMusic("menu");
     } else if (scene === "gameover") {
       playMusic("menu");
@@ -88,7 +90,9 @@ const Index = () => {
           onRestart={restartCurrent}
           onMenu={() => setScene("title")}
           onNextStage={
-            stage === 1 ? () => startStage(2) : undefined
+            stage === 1 ? () => startStage(2)
+            : stage === 2 ? () => startStage(3)
+            : undefined
           }
         />
       )}
