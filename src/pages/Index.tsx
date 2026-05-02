@@ -6,7 +6,7 @@ import { SettingsScreen } from "@/components/game/SettingsScreen";
 import { StageSelect } from "@/components/game/StageSelect";
 import { TitleScreen } from "@/components/game/TitleScreen";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
-import { loadSettings } from "@/game/settings";
+import { loadSettings, unlockStage3 } from "@/game/settings";
 import type { GameScene, StageId } from "@/game/types";
 
 const Index = () => {
