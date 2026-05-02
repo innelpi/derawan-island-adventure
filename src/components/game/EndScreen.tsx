@@ -76,7 +76,7 @@ function WinScreen({ stage, onRestart, onMenu, onNextStage }: { stage: StageId; 
               onClick={onNextStage}
               className="pixel-btn flex-1 rounded border-4 border-foreground bg-secondary px-4 py-3 font-pixel text-xs text-secondary-foreground shadow-pixel active:translate-y-1"
             >
-              ▶▶ STAGE 2
+              ▶▶ STAGE {stage + 1}
             </button>
           )}
           <button
