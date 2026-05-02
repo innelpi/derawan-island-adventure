@@ -396,7 +396,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
             <div className="relative">
               {/* shadow stack for 3D pixel look */}
               <h1
-                className="font-pixel text-3xl leading-tight sm:text-5xl md:text-6xl"
+                className="whitespace-nowrap font-pixel text-3xl leading-tight sm:text-5xl md:text-6xl"
                 style={{
                   color: "hsl(45,100%,65%)",
                   textShadow: `
