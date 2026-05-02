@@ -253,5 +253,7 @@ export function enemyStats(kind: EnemyKind): { hp: number; speed: number; size: 
     case "beast": return { hp: BEAST_HP, speed: BEAST_SPEED, size: 14 };
     case "ghostnet": return { hp: GHOSTNET_HP, speed: GHOSTNET_SPEED, size: 12 };
     case "oilslick": return { hp: OILSLICK_HP, speed: OILSLICK_SPEED, size: 14 };
+    case "microplastic": return { hp: MICROPLASTIC_HP, speed: MICROPLASTIC_SPEED, size: 9 };
+    case "darkjelly": return { hp: DARKJELLY_HP, speed: DARKJELLY_SPEED, size: 16 };
   }
 }
