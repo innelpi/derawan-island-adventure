@@ -38,7 +38,8 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         top: 62 + ((i * 11) % 20),
         delay: i * 1.6,
         duration: 14 + ((i * 3) % 8),
-        flip: i % 2 === 0,
+        // arah berenang: true = kanan (default), false = kiri (perlu di-flip + animasi balik)
+        goesRight: i % 2 === 0,
         color: ["hsl(15,90%,60%)", "hsl(45,95%,60%)", "hsl(195,90%,55%)", "hsl(330,80%,65%)", "hsl(280,70%,65%)"][i],
       })),
     []
