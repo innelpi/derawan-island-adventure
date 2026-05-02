@@ -328,7 +328,63 @@ function drawBackgroundUnderwater(ctx: CanvasRenderingContext2D, state: GameStat
   }
 }
 
-function drawSpriteTinted(
+function drawBackgroundDeepSea(ctx: CanvasRenderingContext2D, state: GameState) {
+  const pol = state.pollution / 100;
+  // Palung gelap — ungu kehitaman
+  const top = state.boss.active ? "#1a0628" : interp("#2a0a4a", "#0a0218", pol);
+  const bot = state.boss.active ? "#04010a" : interp("#0a0218", "#020108", pol);
+  const grad = ctx.createLinearGradient(0, 0, 0, ARENA_H);
+  grad.addColorStop(0, top);
+  grad.addColorStop(1, bot);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, ARENA_W, ARENA_H);
+
+  const t = state.time;
+
+  // Plankton bercahaya (titik kecil glow)
+  ctx.fillStyle = "rgba(160, 220, 255, 0.7)";
+  for (let i = 0; i < 30; i++) {
+    const px = (i * 31 + Math.sin(t * 0.4 + i) * 8) % ARENA_W;
+    const py = (i * 17 + Math.cos(t * 0.3 + i) * 6) % ARENA_H;
+    const flicker = 0.4 + 0.6 * Math.abs(Math.sin(t * 2 + i));
+    ctx.globalAlpha = flicker * 0.8;
+    ctx.fillRect(px, py, 1, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // Bayangan makhluk besar lewat di belakang
+  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+  const shadowX = ((t * 18) % (ARENA_W + 200)) - 100;
+  ctx.beginPath();
+  ctx.ellipse(shadowX, 50, 60, 14, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ranjau plastik / chunks melayang
+  ctx.fillStyle = `rgba(60, 20, 80, ${0.5 + pol * 0.3})`;
+  for (let i = 0; i < 6; i++) {
+    const cx = ((i * 79 + Math.floor(t * 4)) % ARENA_W);
+    const cy = 40 + ((i * 27) % 100);
+    ctx.fillRect(cx, cy, 4, 4);
+    ctx.fillRect(cx + 2, cy + 2, 3, 3);
+  }
+
+  // Lantai palung — pixel jagged
+  ctx.fillStyle = interp("#1a0a08", "#080404", pol);
+  ctx.fillRect(0, ARENA_H - 10, ARENA_W, 10);
+  ctx.fillStyle = "#2a1018";
+  for (let i = 0; i < 12; i++) {
+    const x = i * 40 + (i % 2) * 6;
+    ctx.fillRect(x, ARENA_H - 14, 8, 4);
+  }
+
+  // Vent merah glowing di dasar
+  ctx.fillStyle = `rgba(255, 80, 40, ${0.4 + Math.sin(t * 3) * 0.2})`;
+  ctx.fillRect(80, ARENA_H - 12, 4, 4);
+  ctx.fillRect(280, ARENA_H - 14, 4, 6);
+  ctx.fillRect(400, ARENA_H - 12, 4, 4);
+}
+
+
   ctx: CanvasRenderingContext2D,
   sprite: string[],
   x: number,
