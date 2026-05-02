@@ -27,8 +27,10 @@ const Index = () => {
     if (scene === "title" || scene === "settings" || scene === "stageSelect") {
       playMusic("menu");
     } else if (scene === "cutscene") {
-      playMusic(stage === 2 ? "ocean" : "beach");
+      playMusic(stage === 1 ? "beach" : "ocean");
     } else if (scene === "win") {
+      // Unlock next stage when winning
+      if (stage === 2) unlockStage3();
       playMusic("menu");
     } else if (scene === "gameover") {
       playMusic("menu");
