@@ -9,9 +9,9 @@ export type GameScene =
   | "win"
   | "gameover";
 
-export type StageId = 1 | 2;
+export type StageId = 1 | 2 | 3;
 
-export type EnemyKind = "goblin" | "beast" | "ghostnet" | "oilslick";
+export type EnemyKind = "goblin" | "beast" | "ghostnet" | "oilslick" | "microplastic" | "darkjelly";
 
 export interface Vec2 {
   x: number;
