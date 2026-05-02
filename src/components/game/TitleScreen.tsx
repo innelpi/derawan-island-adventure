@@ -182,20 +182,21 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {fish.map((f, i) => (
           <div
             key={i}
-            className="absolute fish-swim"
+            className={f.goesRight ? "absolute fish-swim-right" : "absolute fish-swim-left"}
             style={{
               top: `${f.top}%`,
               animationDuration: `${f.duration}s`,
               animationDelay: `${f.delay}s`,
-              transform: f.flip ? "scaleX(-1)" : undefined,
             }}
           >
-            <svg width="28" height="14" viewBox="0 0 28 14">
-              <ellipse cx="10" cy="7" rx="9" ry="5" fill={f.color} />
-              <polygon points="19,7 27,2 27,12" fill={f.color} />
-              <circle cx="6" cy="6" r="1.2" fill="white" />
-              <circle cx="6" cy="6" r="0.6" fill="hsl(220,40%,15%)" />
-            </svg>
+            <div style={{ transform: f.goesRight ? undefined : "scaleX(-1)" }}>
+              <svg width="28" height="14" viewBox="0 0 28 14" shapeRendering="crispEdges">
+                <ellipse cx="10" cy="7" rx="9" ry="5" fill={f.color} />
+                <polygon points="19,7 27,2 27,12" fill={f.color} />
+                <circle cx="6" cy="6" r="1.2" fill="white" />
+                <circle cx="6" cy="6" r="0.6" fill="hsl(220,40%,15%)" />
+              </svg>
+            </div>
           </div>
         ))}
       </div>
