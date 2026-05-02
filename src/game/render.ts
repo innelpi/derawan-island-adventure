@@ -157,6 +157,15 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
           if (b.hurtTimer > 0) {
             ctx.globalCompositeOperation = "source-over";
             drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#ffffff");
+          } else if (state.stage === 3) {
+            // Plastic Tyrant: glow ungu di belakang + sprite biasa
+            ctx.save();
+            ctx.fillStyle = "rgba(255, 60, 220, 0.35)";
+            ctx.beginPath();
+            ctx.arc(b.pos.x, b.pos.y - 8, 38 + Math.sin(state.time * 4) * 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+            drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#c43cff");
           } else {
             drawSprite(ctx, bossSprite, sx, sy, SCALE);
           }
