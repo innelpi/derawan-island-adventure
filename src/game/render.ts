@@ -177,7 +177,9 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
           e.kind === "goblin" ? TRASH_GOBLIN
           : e.kind === "beast" ? BOTTLE_BEAST
           : e.kind === "ghostnet" ? GHOST_NET
-          : OIL_SLICK;
+          : e.kind === "oilslick" ? OIL_SLICK
+          : e.kind === "microplastic" ? TRASH_GOBLIN  // reuse, dirender lebih kecil
+          : GHOST_NET;                                // darkjelly: reuse ghostnet shape
         const sx = e.pos.x - (sprite[0].length * SCALE) / 2;
         const sy = e.pos.y - sprite.length * SCALE + 4;
         // shadow
