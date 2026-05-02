@@ -271,7 +271,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .wave-slide-slow, .wave-slide-mid, .wave-slide-fast,
-    .cloud-drift, .fish-swim, .sparkle, .menu-btn,
+    .cloud-drift, .fish-swim-right, .fish-swim-left, .sparkle, .menu-btn,
     .shine-bar { animation: none; }
   }
 
