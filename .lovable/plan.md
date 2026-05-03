@@ -1,82 +1,38 @@
+## Rencana: Background HD Custom + Tutorial Cara Bermain
 
-# Derawan Hero — MVP Stage 1: Pantai Derawan
+### 1. Upload Gambar HD Background
+- Kamu upload gambar HD-mu via tombol **+** (Attach) di chat. Format PNG/JPG, idealnya rasio landscape (~16:9, min 1920×1080) biar tajam di semua layar.
+- Setelah upload, gambar akan disimpan ke `src/assets/title-bg-custom.png` (atau nama sesuai file-mu).
 
-Game edukasi pixel art bertema konservasi laut Pulau Derawan untuk anak SD. MVP ini fokus ke **Stage 1 (Pantai Derawan)** dengan gameplay yang sengaja disederhanakan — anak tinggal gerak & tap/pencet untuk bersihin sampah dan kalahin boss Litter King. Stage 2 (Kakaban) & Stage 3 (Maratua) menyusul setelah Stage 1 ke-polish.
+### 2. Revamp Title Screen (`src/components/game/TitleScreen.tsx`)
+- Pasang gambarmu sebagai **background full-screen** (`background-size: cover`, `background-position: center`).
+- **Hapus** layer berat: gradient sunset, gunung SVG, pulau pasir, palm trees, turtle Tora besar, ikan-ikan, awan.
+- **Pertahankan overlay tipis** biar tetap hidup tapi tidak ramai:
+  - Sparkle/partikel cahaya halus (~10 buah, opacity rendah)
+  - 1 layer wave SVG transparan di bawah (opacity ~25%)
+  - Dark vignette tipis di bawah biar teks judul kontras
+- Judul "DERAWAN HERO" + 2 tombol (Bermain, Pengaturan) tetap di posisi yang sama dengan animasi yang sudah ada.
 
-## Yang akan dibangun
+### 3. Tutorial Cara Bermain (Auto-show sebelum Stage 1)
+File baru: **`src/components/game/HowToPlay.tsx`** — overlay popup pixel-art bergaya kartu, isi 4 tab/halaman:
 
-### 1. Halaman Title Screen
-- Judul besar **"DERAWAN HERO"** dengan style pixel chibi warna cerah
-- Background pantai pixel: pasir, ombak biru, langit, pohon kelapa
-- Tombol **BERMAIN** dan **PENGATURAN** (sound on/off, kontrol)
-- Karakter utama (anak chibi pakai topi pantai) dadah-dadah sebagai animasi sambutan
+1. **🎮 Kontrol** — WASD/Arrow untuk gerak, Space/J untuk serang, ESC/P untuk pause.
+2. **🎯 Tujuan Tiap Stage** — Stage 1 (Pantai: Litter King), Stage 2 (Laut Dangkal: Net Master), Stage 3 (Laut Dalam: Plastic Tyrant). Bersihkan sampah & kalahkan boss untuk dapat kode rahasia.
+3. **👾 Musuh & Item** — preview sprite Trash Goblin, Bottle Beast, Net Master, Microplastic, Dark Jelly + power-up (heart, koin).
+4. **💡 Tips & Trik** — jaga jarak dari boss, kumpulkan sampah berturut untuk kombo, hindari proyektil, manfaatkan dash.
 
-### 2. Cutscene Awal (komik 2 panel)
-- **Panel 1:** Karakter sampai di dermaga Derawan bawa koper, ekspresi senang
-- **Panel 2:** Langit menggelap, energi gelap muncul muntahin monster sampah ke pantai
-- Kotak dialog di bawah + tombol **[Skip]** dan **[Lanjut]**
-- Dialog: *"Akhirnya liburan ke Derawan! Eh… energi gelap apa itu? Aku harus hentikan mereka sebelum pantainya hancur!"*
+Navigasi: tombol **‹ Prev / Next ›**, indikator titik halaman, tombol **"MULAI MAIN!"** di halaman terakhir, tombol **× Skip** di pojok.
 
-### 3. Gameplay Stage 1 — Pantai Derawan (disederhanain)
-**Mekanik super simpel (cocok SD kelas 1–6):**
-- **Gerak:** WASD/panah (desktop) atau joystick virtual (mobile)
-- **Serang:** 1 tombol (Spasi/klik di desktop, tombol besar di mobile) — sekali pencet = serang ke arah hadap karakter
-- **Special "Clean Wave":** isi otomatis tiap kalahin musuh, sekali penuh bisa dipakai untuk sapu semua musuh di layar (tombol khusus muncul kalau gauge full)
-- ❌ Tidak ada light/heavy/combo/dodge — terlalu ribet untuk anak SD
+### 4. Persistensi & Trigger
+- Tambah flag `tutorialSeen: boolean` di `src/game/settings.ts` (localStorage).
+- Di `src/pages/Index.tsx`: sebelum render Stage 1 pertama kali → cek flag. Kalau `false`, tampilkan `<HowToPlay />`. Setelah klik "MULAI MAIN!" → set `true` dan lanjut ke gameplay.
+- Tambah checkbox "**Jangan tampilkan lagi**" (default tercentang) supaya user yang penasaran tetap bisa lihat ulang.
+- Bonus: tambah opsi **"Lihat Cara Bermain"** di Settings screen biar bisa dibuka lagi kapan saja.
 
-**Musuh:**
-- **Trash Goblin** (gerak lambat, 1× pukul mati) — dari sampah botol
-- **Bottle Beast** (lebih cepat, 2× pukul mati) — dari kaleng & sedotan
-- Musuh muncul bertahap dalam **3 wave**, makin banyak tiap wave
+### Detail Teknis
+- Gambar di-import sebagai modul Vite: `import bgImage from "@/assets/title-bg-custom.png"` agar di-hash & cache-friendly.
+- `HowToPlay.tsx` pakai state `useState<number>(0)` untuk halaman aktif, animasi `animate-scale-in` saat muncul.
+- Tutorial overlay full-screen dengan backdrop `bg-black/70 backdrop-blur-sm`, kartu di tengah max-width ~520px, scrollable di mobile.
 
-**UI di layar:**
-- Kiri atas: Health Bar karakter (3 hati ❤️❤️❤️)
-- Tengah atas: **Pollution Meter** (hijau → kuning → merah). Naik kalau musuh kelamaan dibiarin. Kalau penuh = game over
-- Kanan bawah: tombol Serang + tombol Special (kalau penuh)
-- Kiri bawah: joystick virtual (mobile only)
-
-**Boss Fight — Litter King:**
-- Muncul setelah wave 3 selesai, layar bergetar
-- Boss besar dari tumpukan jaring + botol, lempar proyektil sampah
-- HP bar besar di bawah dengan tulisan **"LITTER KING"**
-- Karakter harus gerak hindarin proyektil + serang pas ada celah
-- Kalahin pakai serangan biasa + Special "Clean Wave"
-
-### 4. Layar Kemenangan & Edukasi
-- Animasi Litter King meledak jadi gelembung, langit cerah, laut biru
-- Pop-up besar: **"STAGE CLEAR: PANTAI KEMBALI BERSIH!"**
-- **Pesan edukasi** (bahasa anak SD): *"Pahlawan! Sampah kecil maupun besar sama bahayanya. Kalau terbawa ombak, butuh ratusan tahun untuk hancur dan bisa meracuni laut kita!"*
-- **Reward Box:** ikon "Pecahan Kristal Terumbu" + tulisan *"Berguna untuk perjalanan ke Kakaban nanti!"*
-- Tombol **Main Lagi** dan **Kembali ke Menu**
-
-### 5. Layar Game Over
-- Kalau HP habis atau Pollution Meter penuh
-- Pesan ramah: *"Yah, pantainya belum bersih. Coba lagi ya, Pahlawan!"*
-- Tombol **Coba Lagi** dan **Menu**
-
-## Gaya Visual
-- **Pixel art chibi** warna cerah & lucu (bukan 8-bit jadul yang serem)
-- Palet: biru laut cerah, pasir krem, hijau kelapa, monster sampah warna gelap tapi tetap lucu (mata besar, ekspresi "nakal" bukan "horor")
-- Font pixel yang masih kebaca jelas untuk anak
-- Animasi: sprite walk, attack, dan idle sederhana (2–4 frame)
-
-## Kontrol Responsif
-- **Desktop:** WASD/panah gerak, Spasi serang, E special
-- **Mobile/tablet:** joystick virtual kiri bawah, tombol serang & special kanan bawah
-- Auto-detect device, layout UI nyesuain
-
-## Catatan Teknis (untuk yang penasaran)
-- React + Canvas/HTML game loop sederhana (tanpa engine berat)
-- Sprite pixel digambar via Canvas 2D, scaling crisp (image-rendering: pixelated)
-- State stage di-manage via React state; loop game pakai requestAnimationFrame
-- Asset pixel digenerate sebagai SVG/PNG sederhana dulu — bisa diganti dengan asset custom belakangan
-- Tidak butuh backend/database untuk MVP (skor & progres disimpan di localStorage)
-
-## Yang BELUM dibangun di MVP ini
-- Stage 2 (Danau Kakaban + Oil Kraken)
-- Stage 3 (Maratua + Iron Leviathan)
-- Sistem save progres antar-stage
-- Background music & sound effect (bisa ditambah setelah gameplay solid)
-- Leaderboard / multi-pemain
-
-Ketiga hal ini bakal aku tambahin di iterasi berikutnya setelah Stage 1 jalan mulus dan kamu udah test sendiri rasanya.
+### Yang Perlu Kamu Lakukan Dulu
+**Upload gambar HD-mu sekarang** (drag ke chat atau klik **+ Attach**). Setelah ke-approve plan ini, aku akan minta gambarnya kalau belum ada, lalu langsung eksekusi semuanya.

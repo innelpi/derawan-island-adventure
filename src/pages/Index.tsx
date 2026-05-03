@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Cutscene } from "@/components/game/Cutscene";
 import { EndScreen } from "@/components/game/EndScreen";
 import { GameScreen } from "@/components/game/GameScreen";
+import { HowToPlay } from "@/components/game/HowToPlay";
 import { SettingsScreen } from "@/components/game/SettingsScreen";
 import { StageSelect } from "@/components/game/StageSelect";
 import { TitleScreen } from "@/components/game/TitleScreen";
@@ -13,6 +14,7 @@ const Index = () => {
   const [scene, setScene] = useState<GameScene>("title");
   const [stage, setStage] = useState<StageId>(1);
   const [gameKey, setGameKey] = useState(0);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   // Apply music settings on mount
   useEffect(() => {
@@ -40,7 +42,12 @@ const Index = () => {
   const startStage = (s: StageId) => {
     setStage(s);
     setGameKey((k) => k + 1);
-    setScene("cutscene");
+    const seen = loadSettings().tutorialSeen;
+    if (!seen) {
+      setShowTutorial(true);
+    } else {
+      setScene("cutscene");
+    }
   };
 
   const restartCurrent = () => {
@@ -103,6 +110,15 @@ const Index = () => {
           stage={stage}
           onRestart={restartCurrent}
           onMenu={() => setScene("title")}
+        />
+      )}
+
+      {showTutorial && (
+        <HowToPlay
+          onClose={() => {
+            setShowTutorial(false);
+            setScene("cutscene");
+          }}
         />
       )}
     </main>

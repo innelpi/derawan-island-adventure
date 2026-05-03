@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { HowToPlay } from "@/components/game/HowToPlay";
 import { SFX, setMuted, setSfxVolume } from "@/game/audio";
 import { setMusicMuted, setMusicVolume } from "@/game/music";
 import { loadSettings, saveSettings } from "@/game/settings";
@@ -13,6 +14,7 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
   const [music, setMusic] = useState(initial.musicVolume);
   const [sfx, setSfx] = useState(initial.sfxVolume);
   const [muted, setMutedLocal] = useState(initial.muted);
+  const [showHelp, setShowHelp] = useState(false);
 
   const updateSfx = (v: number) => {
     setSfx(v);
@@ -124,9 +126,20 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
           </p>
         </div>
 
+        {/* Tutorial button */}
+        <button
+          onClick={() => {
+            SFX.click();
+            setShowHelp(true);
+          }}
+          className="mb-4 w-full rounded border-4 border-foreground bg-secondary py-2.5 font-pixel text-[10px] text-secondary-foreground shadow-pixel active:translate-y-1"
+        >
+          📖 LIHAT CARA BERMAIN
+        </button>
+
         {/* Controls info */}
         <div className="mb-5 rounded border-4 border-foreground bg-muted p-3">
-          <h3 className="mb-2 font-pixel text-[10px] uppercase">🎯 Cara Main</h3>
+          <h3 className="mb-2 font-pixel text-[10px] uppercase">🎯 Cara Main Singkat</h3>
           <ul className="space-y-1 font-body text-xs text-card-foreground">
             <li>💻 <strong>Desktop:</strong> WASD gerak · SPASI serang · E clean wave</li>
             <li>📱 <strong>HP:</strong> Joystick kiri · Tombol kanan untuk serang</li>
@@ -145,6 +158,7 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
           Derawan Island · Game Edukasi Anak SD
         </p>
       </div>
+      {showHelp && <HowToPlay onClose={() => setShowHelp(false)} showDontShowAgain={false} />}
     </div>
   );
 }
