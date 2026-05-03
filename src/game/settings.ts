@@ -18,6 +18,7 @@ const DEFAULTS: UserSettings = {
   muted: false,
   stage2Unlocked: false,
   stage3Unlocked: false,
+  tutorialSeen: false,
 };
 
 let cache: UserSettings | null = null;
