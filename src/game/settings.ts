@@ -6,6 +6,7 @@ export interface UserSettings {
   muted: boolean;
   stage2Unlocked: boolean;
   stage3Unlocked: boolean;
+  tutorialSeen: boolean;
 }
 
 const KEY = "derawan-hero:settings";
