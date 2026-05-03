@@ -158,6 +158,7 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
           Derawan Island · Game Edukasi Anak SD
         </p>
       </div>
+      {showHelp && <HowToPlay onClose={() => setShowHelp(false)} showDontShowAgain={false} />}
     </div>
   );
 }
