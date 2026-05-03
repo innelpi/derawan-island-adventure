@@ -112,6 +112,15 @@ const Index = () => {
           onMenu={() => setScene("title")}
         />
       )}
+
+      {showTutorial && (
+        <HowToPlay
+          onClose={() => {
+            setShowTutorial(false);
+            setScene("cutscene");
+          }}
+        />
+      )}
     </main>
   );
 };
