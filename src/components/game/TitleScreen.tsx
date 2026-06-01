@@ -41,7 +41,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       className="relative h-full w-full overflow-hidden bg-[hsl(220,40%,15%)]"
       onPointerDown={startMenuMusic}
     >
-{/* ==={/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
+{/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
       <div className="absolute inset-0 h-full w-full">
         {/* 1. Background Langit & Laut (Statis) */}
         <img 
@@ -51,26 +51,28 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo / Judul (Ukuran Super Gede) */}
-        <img 
-          src={logoTitle} 
-          className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[90%] max-w-[900px] animate-bounce-slow pixelated" 
-          alt="Derawan Island Title" 
-          draggable={false} 
-        />
+        {/* 2 & 3. CONTAINER LOGO + PENYU (Biar Penyu Nempel di Kanan Logo) */}
+        <div className="absolute top-[12%] left-1/2 -translate-x-1/2 flex items-center justify-center w-[95%] max-w-[900px] animate-bounce-slow">
+          {/* Logo Judul Utama */}
+          <img 
+            src={logoTitle} 
+            className="w-[75%] md:w-[80%] h-auto pixelated" 
+            alt="Derawan Island Title" 
+            draggable={false} 
+          />
+          {/* Penyu - Sekarang nempel di kanan logo dan ikut mengapung bareng */}
+          <img 
+            src={turtle} 
+            className="w-[20%] md:w-[25%] h-auto pixelated -ml-[5%] animate-float-turtle" 
+            alt="Turtle Character" 
+            draggable={false} 
+          />
+        </div>
 
-        {/* 3. Penyu (Ukurannya Jadi Gede & Geser Biar Pas) */}
-        <img 
-          src={turtle} 
-          className="absolute right-[8%] top-[30%] w-[400px] md:w-[350px] animate-float-turtle pixelated" 
-          alt="Turtle Character" 
-          draggable={false} 
-        />
-
-        {/* 4. Properti Pantai (Lebih Jelas di Pojok) */}
+        {/* 4. Properti Pantai (Udah Diperbesar Biar Realistis di Pasir) */}
         <img 
           src={beachItems} 
-          className="absolute bottom-[8%] left-[8%] w-[500px] md:w-[450px] pixelated" 
+          className="absolute bottom-[6%] left-[4%] w-[320px] sm:w-[420px] md:w-[520px] h-auto pixelated" 
           alt="Beach Items" 
           draggable={false} 
         />
