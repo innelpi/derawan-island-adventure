@@ -41,7 +41,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       className="relative h-full w-full overflow-hidden bg-[hsl(220,40%,15%)]"
       onPointerDown={startMenuMusic}
     >
-    {/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
+{/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
       <div className="absolute inset-0 h-full w-full">
         {/* 1. Background Langit & Laut (Statis) */}
         <img 
@@ -75,7 +75,6 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
       </div>
-      />
 
       {/* ============ OVERLAY: gelombang transparan tipis ============ */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[20%]">
