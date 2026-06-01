@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import titleBg from "@/assets/title-bg.png";
 import { SFX, unlockAudio } from "@/game/audio";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
