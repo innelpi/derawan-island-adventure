@@ -98,64 +98,10 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       {/* ============ VIGNETTE biar teks kontras ============ */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/55" />
 
-      {/* ============ TITLE & MENU ============ */}
-      <div className="relative z-10 flex h-full w-full flex-col items-center justify-between p-4 sm:p-6">
-        {/* TITLE */}
-        <div className="mt-4 text-center sm:mt-8">
-          <div className="title-pop relative inline-block">
-            <div className="absolute -inset-6 rounded-full bg-[hsl(45,100%,70%)] opacity-40 blur-2xl" />
-            <div className="relative">
-              <h1
-                className="whitespace-nowrap font-pixel text-3xl leading-tight sm:text-5xl md:text-6xl"
-                style={{
-                  color: "hsl(45,100%,65%)",
-                  textShadow: `
-                    2px 0 0 hsl(220,50%,12%),
-                    -2px 0 0 hsl(220,50%,12%),
-                    0 2px 0 hsl(220,50%,12%),
-                    0 -2px 0 hsl(220,50%,12%),
-                    4px 4px 0 hsl(15,85%,40%),
-                    6px 6px 0 hsl(220,50%,12%),
-                    8px 8px 20px hsl(220,50%,12%,0.6)
-                  `,
-                }}
-              >
-                {"DERAWAN".split("").map((ch, i) => (
-                  <span key={i} className="title-letter inline-block" style={{ animationDelay: `${i * 0.08}s` }}>
-                    {ch}
-                  </span>
-                ))}
-              </h1>
-              <h1
-                className="font-pixel text-2xl leading-tight sm:text-4xl md:text-5xl"
-                style={{
-                  color: "hsl(195,100%,70%)",
-                  textShadow: `
-                    2px 0 0 hsl(220,50%,12%),
-                    -2px 0 0 hsl(220,50%,12%),
-                    0 2px 0 hsl(220,50%,12%),
-                    0 -2px 0 hsl(220,50%,12%),
-                    4px 4px 0 hsl(195,80%,30%),
-                    6px 6px 0 hsl(220,50%,12%)
-                  `,
-                }}
-              >
-                HERO
-              </h1>
-              <div className="title-shine pointer-events-none absolute inset-0 overflow-hidden">
-                <div className="shine-bar" />
-              </div>
-            </div>
-            <div className="mx-auto mt-3 inline-block rotate-[-2deg] rounded-sm border-2 border-foreground bg-[hsl(0,80%,55%)] px-3 py-1 shadow-pixel">
-              <p className="font-pixel text-[9px] uppercase tracking-widest text-white sm:text-xs">
-                ⭐ Petualangan Pulau Derawan ⭐
-              </p>
-            </div>
-          </div>
-        </div>
-
+      {/* ============ MENU ============ */}
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-end p-4 sm:p-6">
         {/* MENU BUTTONS */}
-        <div className="mb-6 flex w-full max-w-[280px] flex-col gap-4 sm:mb-10">
+        <div className="mb-16 flex w-full max-w-[280px] flex-col gap-4 sm:mb-24">
           <button
             onClick={() => {
               unlockAudio();
@@ -192,14 +138,6 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
               <span>⚙</span> PENGATURAN
             </span>
           </button>
-
-          <div className="mt-1 flex items-center justify-center gap-2 rounded-sm border-2 border-foreground bg-card/85 px-3 py-1.5 backdrop-blur-sm">
-            <span className="text-sm">🌊</span>
-            <p className="font-pixel text-[8px] text-foreground sm:text-[10px]">
-              GAME EDUKASI KONSERVASI LAUT
-            </p>
-            <span className="text-sm">🐢</span>
-          </div>
         </div>
       </div>
     </div>
