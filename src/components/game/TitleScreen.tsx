@@ -63,7 +63,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 💡 TIPS: Kalau penyunya kurang ke kiri/nempel, perbesar angka right-[22%] jadi right-[25%] atau right-[28%] */}
         <img 
           src={turtle} 
-          className="absolute top-[18%] right-[45%] w-[100px] sm:w-[150px] md:w-[180px] animate-float-turtle pixelated z-10" 
+          className="absolute top-[40%] right-[34%] w-[500px] sm:w-[150px] md:w-[180px] animate-float-turtle pixelated z-10" 
           alt="Turtle Character" 
           draggable={false} 
         />
