@@ -101,7 +101,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       {/* ============ MENU ============ */}
       <div className="relative z-10 flex h-full w-full flex-col items-center justify-end p-4 sm:p-6">
         {/* MENU BUTTONS */}
-        <div className="mb-6 flex w-full max-w-[280px] flex-col gap-4 sm:mb-10">
+        <div className="mb-16 flex w-full max-w-[280px] flex-col gap-4 sm:mb-24">
           <button
             onClick={() => {
               unlockAudio();
@@ -138,14 +138,6 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
               <span>⚙</span> PENGATURAN
             </span>
           </button>
-
-          <div className="mt-1 flex items-center justify-center gap-2 rounded-sm border-2 border-foreground bg-card/85 px-3 py-1.5 backdrop-blur-sm">
-            <span className="text-sm">🌊</span>
-            <p className="font-pixel text-[8px] text-foreground sm:text-[10px]">
-              GAME EDUKASI KONSERVASI LAUT
-            </p>
-            <span className="text-sm">🐢</span>
-          </div>
         </div>
       </div>
     </div>
