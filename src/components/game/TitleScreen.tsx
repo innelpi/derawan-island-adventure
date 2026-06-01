@@ -51,33 +51,32 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2 & 3. CONTAINER LOGO + PENYU (Biar Penyu Nempel di Kanan Logo) */}
-        <div className="absolute top-[12%] left-1/2 -translate-x-1/2 flex items-center justify-center w-[95%] max-w-[900px] animate-bounce-slow">
+        {/* 2 & 3. GABUNGAN LOGO + PENYU (Biar Penyu Nempel Persis di Kanan Logo) */}
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 flex items-center justify-center w-[95%] max-w-[950px] animate-bounce-slow">
           {/* Logo Judul Utama */}
           <img 
             src={logoTitle} 
-            className="w-[75%] md:w-[80%] h-auto pixelated" 
+            className="w-[70%] sm:w-[75%] h-auto pixelated" 
             alt="Derawan Island Title" 
             draggable={false} 
           />
-          {/* Penyu - Sekarang nempel di kanan logo dan ikut mengapung bareng */}
+          {/* Penyu - Ditarik ke kiri pakai margin minus (-ml) biar nempel memotong transparansi logo */}
           <img 
             src={turtle} 
-            className="w-[20%] md:w-[25%] h-auto pixelated -ml-[5%] animate-float-turtle" 
+            className="w-[18%] sm:w-[22%] h-auto pixelated -ml-12 sm:-ml-20 md:-ml-28 animate-float-turtle" 
             alt="Turtle Character" 
             draggable={false} 
           />
         </div>
 
-        {/* 4. Properti Pantai (Udah Diperbesar Biar Realistis di Pasir) */}
+        {/* 4. Properti Pantai (Dibuat Super Gede & Realistis di Atas Pasir) */}
         <img 
           src={beachItems} 
-          className="absolute bottom-[6%] left-[4%] w-[320px] sm:w-[420px] md:w-[520px] h-auto pixelated" 
+          className="absolute bottom-[3%] left-[2%] w-[280px] sm:w-[380px] md:w-[460px] h-auto pixelated" 
           alt="Beach Items" 
           draggable={false} 
         />
       </div>
-
       {/* ============ OVERLAY: gelombang transparan tipis ============ */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[20%]">
         <svg
