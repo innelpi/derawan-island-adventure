@@ -54,7 +54,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 2. Logo / Judul (Ukuran Super Gede) */}
         <img 
           src={logoTitle} 
-          className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[90%] max-w-[700px] animate-bounce-slow pixelated" 
+          className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[90%] max-w-[900px] animate-bounce-slow pixelated" 
           alt="Derawan Island Title" 
           draggable={false} 
         />
@@ -62,7 +62,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 3. Penyu (Ukurannya Jadi Gede & Geser Biar Pas) */}
         <img 
           src={turtle} 
-          className="absolute right-[8%] top-[30%] w-[250px] md:w-[350px] animate-float-turtle pixelated" 
+          className="absolute right-[8%] top-[30%] w-[400px] md:w-[350px] animate-float-turtle pixelated" 
           alt="Turtle Character" 
           draggable={false} 
         />
@@ -70,7 +70,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 4. Properti Pantai (Lebih Jelas di Pojok) */}
         <img 
           src={beachItems} 
-          className="absolute bottom-[8%] left-[8%] w-[300px] md:w-[450px] pixelated" 
+          className="absolute bottom-[8%] left-[8%] w-[500px] md:w-[450px] pixelated" 
           alt="Beach Items" 
           draggable={false} 
         />
