@@ -1,5 +1,8 @@
 import { useEffect, useMemo } from "react";
-import titleBg from "@/assets/title-bg.png";
+import bgSkySea from "@/assets/bg-sky-sea.png";
+import logoTitle from "@/assets/title-game.png";
+import turtle from "@/assets/turtle (2).png";
+import beachItems from "@/assets/set-up-pixels.png";
 import { SFX, unlockAudio } from "@/game/audio";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
 import { loadSettings } from "@/game/settings";
@@ -38,12 +41,40 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       className="relative h-full w-full overflow-hidden bg-[hsl(220,40%,15%)]"
       onPointerDown={startMenuMusic}
     >
-      {/* ============ BACKGROUND IMAGE (HD custom) ============ */}
-      <img
-        src={titleBg}
-        alt="Pulau Derawan"
-        className="absolute inset-0 h-full w-full object-cover"
-        draggable={false}
+    {/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
+      <div className="absolute inset-0 h-full w-full">
+        {/* 1. Background Langit & Laut (Statis) */}
+        <img 
+          src={bgSkySea} 
+          className="absolute inset-0 w-full h-full object-cover" 
+          alt="Background" 
+          draggable={false} 
+        />
+
+        {/* 2. Logo / Tulisan Derawan Island (Animasi mengapung pelan) */}
+        <img 
+          src={logoTitle} 
+          className="absolute top-[15%] left-1/2 -translate-x-1/2 w-3/4 max-w-md animate-bounce-slow pixelated" 
+          alt="Derawan Island Title" 
+          draggable={false} 
+        />
+
+        {/* 3. Penyu (Animasi naik turun) */}
+        <img 
+          src={turtle} 
+          className="absolute right-[10%] top-[40%] w-32 animate-float-turtle pixelated" 
+          alt="Turtle Character" 
+          draggable={false} 
+        />
+
+        {/* 4. Properti Pantai (Statis di bawah) */}
+        <img 
+          src={beachItems} 
+          className="absolute bottom-[5%] left-[15%] w-40 pixelated" 
+          alt="Beach Items" 
+          draggable={false} 
+        />
+      </div>
       />
 
       {/* ============ OVERLAY: gelombang transparan tipis ============ */}
