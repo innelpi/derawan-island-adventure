@@ -51,25 +51,24 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2 & 3. GABUNGAN LOGO + PENYU (Biar Penyu Nempel Persis di Kanan Logo) */}
-        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 flex items-center justify-center w-[95%] max-w-[950px] animate-bounce-slow">
-          {/* Logo Judul Utama */}
-          <img 
-            src={logoTitle} 
-            className="w-[70%] sm:w-[75%] h-auto pixelated" 
-            alt="Derawan Island Title" 
-            draggable={false} 
-          />
-          {/* Penyu - Ditarik ke kiri pakai margin minus (-ml) biar nempel memotong transparansi logo */}
-          <img 
-            src={turtle} 
-            className="w-[18%] sm:w-[22%] h-auto pixelated -ml-12 sm:-ml-20 md:-ml-28 animate-float-turtle" 
-            alt="Turtle Character" 
-            draggable={false} 
-          />
-        </div>
+        {/* 2. Logo Judul Utama */}
+        <img 
+          src={logoTitle} 
+          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[85%] max-w-[850px] animate-bounce-slow pixelated" 
+          alt="Derawan Island Title" 
+          draggable={false} 
+        />
 
-        {/* 4. Properti Pantai (Dibuat Super Gede & Realistis di Atas Pasir) */}
+        {/* 3. Penyu (Kita atur koordinatnya menimpa ruang kosong logo) */}
+        {/* 💡 TIPS: Kalau penyunya kurang ke kiri/nempel, perbesar angka right-[22%] jadi right-[25%] atau right-[28%] */}
+        <img 
+          src={turtle} 
+          className="absolute top-[18%] right-[22%] w-[100px] sm:w-[150px] md:w-[180px] animate-float-turtle pixelated z-10" 
+          alt="Turtle Character" 
+          draggable={false} 
+        />
+
+        {/* 4. Properti Pantai (Super Gede di atas Pasir) */}
         <img 
           src={beachItems} 
           className="absolute bottom-[3%] left-[2%] w-[280px] sm:w-[380px] md:w-[460px] h-auto pixelated" 
