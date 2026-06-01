@@ -41,7 +41,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       className="relative h-full w-full overflow-hidden bg-[hsl(220,40%,15%)]"
       onPointerDown={startMenuMusic}
     >
-{/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
+{/* ==={/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
       <div className="absolute inset-0 h-full w-full">
         {/* 1. Background Langit & Laut (Statis) */}
         <img 
@@ -51,26 +51,26 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo / Tulisan Derawan Island (Animasi mengapung pelan) */}
+        {/* 2. Logo / Judul (Ukuran Super Gede) */}
         <img 
           src={logoTitle} 
-          className="absolute top-[15%] left-1/2 -translate-x-1/2 w-3/4 max-w-md animate-bounce-slow pixelated" 
+          className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[90%] max-w-[700px] animate-bounce-slow pixelated" 
           alt="Derawan Island Title" 
           draggable={false} 
         />
 
-        {/* 3. Penyu (Animasi naik turun) */}
+        {/* 3. Penyu (Ukurannya Jadi Gede & Geser Biar Pas) */}
         <img 
           src={turtle} 
-          className="absolute right-[10%] top-[40%] w-32 animate-float-turtle pixelated" 
+          className="absolute right-[8%] top-[30%] w-[250px] md:w-[350px] animate-float-turtle pixelated" 
           alt="Turtle Character" 
           draggable={false} 
         />
 
-        {/* 4. Properti Pantai (Statis di bawah) */}
+        {/* 4. Properti Pantai (Lebih Jelas di Pojok) */}
         <img 
           src={beachItems} 
-          className="absolute bottom-[5%] left-[15%] w-40 pixelated" 
+          className="absolute bottom-[8%] left-[8%] w-[300px] md:w-[450px] pixelated" 
           alt="Beach Items" 
           draggable={false} 
         />
