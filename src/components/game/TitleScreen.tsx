@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import bgSkySea from "@/assets/bg-sky-sea.png";
 import logoTitle from "@/assets/title-game.png";
-import turtleFrame1 from "@/assets/turtle-frame1.png.asset.json";
-import turtleFrame2 from "@/assets/turtle-frame2.png.asset.json";
+import turtleFrame1 from "@/assets/turtle-frame1.png";
+import turtleFrame2 from "@/assets/turtle-frame2.png";
 import beachItems from "@/assets/set-up-pixels.png";
 import { SFX, unlockAudio } from "@/game/audio";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
@@ -76,14 +76,14 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         >
           <div className="relative w-full animate-float-soft" style={{ aspectRatio: "1 / 1" }}>
             <img
-              src={turtleFrame1.url}
+           src={turtleFrame1}
               className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
               style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
               alt="Turtle Character"
               draggable={false}
             />
             <img
-              src={turtleFrame2.url}
+         src={turtleFrame2}
               className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
               style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
               alt=""
