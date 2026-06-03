@@ -59,19 +59,35 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo Judul (pas di tengah) + Penyu Tora (nempel kanan logo) */}
-        <div className="absolute top-[6%] left-1/2 -translate-x-1/2 z-20">
-          <div className="relative inline-block">
+        {/* 2. Logo Judul — presisi di tengah */}
+        <img
+          src={logoTitle}
+          className="absolute top-[6%] left-1/2 -translate-x-1/2 w-[min(70vw,640px)] animate-float-soft pixelated z-20"
+          alt="Derawan Heroes Title"
+          draggable={false}
+        />
+        {/* Penyu Tora — nempel di kanan logo, 2 frame bergantian */}
+        <div
+          className="absolute top-[6%] z-20 pointer-events-none"
+          style={{
+            left: "calc(50% + min(35vw, 320px) - 12px)",
+            width: "min(31.5vw, 288px)",
+          }}
+        >
+          <div className="relative w-full animate-float-soft" style={{ aspectRatio: "1 / 1" }}>
             <img
-              src={logoTitle}
-              className="block w-[min(70vw,640px)] animate-float-soft pixelated"
-              alt="Derawan Heroes Title"
+              src={turtleFrame1.url}
+              className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
+              style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
+              alt="Turtle Character"
               draggable={false}
             />
             <img
-              src={turtleFrame === 0 ? turtleFrame1.url : turtleFrame2.url}
-              className="absolute left-full top-1/2 -translate-y-1/2 -ml-3 w-[45%] pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)]"
-              alt="Turtle Character"
+              src={turtleFrame2.url}
+              className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
+              style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
+              alt=""
+              aria-hidden
               draggable={false}
             />
           </div>
