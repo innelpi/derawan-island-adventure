@@ -66,10 +66,13 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           alt="Derawan Heroes Title"
           draggable={false}
         />
-{/* Penyu Tora — nempel di kanan logo, 2 frame bergantian */}
-          <div className="absolute top-[10%] z-20 pointer-events-none" style={{left: "calc(50% + min(35vw, 270px) - 30px)", width: "min(25vw, 220px)", }} >
-          <div className="relative w-full animate-float-soft" style={{ aspectRatio: "1 / 1" }}>
-            <img
+        { /* Penyu Tora — Sekarang nongkrong di bawah samping tenda/properti seru */ }
+<div className="absolute bottom-[6%] left-[260px] sm:left-[350px] md:left-[440px] z-20 pointer-events-none w-[120px] sm:w-[160px] md:w-[200px]">
+  <div className="relative w-full animate-float-soft" style={{ aspectRatio: "1 / 1" }}>
+    <img src={turtleFrame1} className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75" style={{ opacity: turtleFrame === 0 ? 1 : 0 }} alt="Turtle Character" draggable={false} />
+    <img src={turtleFrame2} className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75" style={{ opacity: turtleFrame === 1 ? 1 : 0 }} alt="" aria-hidden draggable={false} />
+  </div>
+</div>
            src={turtleFrame1}
               className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
               style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
