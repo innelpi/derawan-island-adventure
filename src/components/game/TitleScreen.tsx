@@ -1,7 +1,8 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import bgSkySea from "@/assets/bg-sky-sea.png";
 import logoTitle from "@/assets/title-game.png";
-import turtle from "@/assets/turtle.png";
+import turtleFrame1 from "@/assets/turtle-frame1.png.asset.json";
+import turtleFrame2 from "@/assets/turtle-frame2.png.asset.json";
 import beachItems from "@/assets/set-up-pixels.png";
 import { SFX, unlockAudio } from "@/game/audio";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
