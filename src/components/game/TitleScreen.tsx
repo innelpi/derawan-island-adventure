@@ -14,10 +14,17 @@ interface TitleScreenProps {
 }
 
 export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
+  const [turtleFrame, setTurtleFrame] = useState(0);
+
   useEffect(() => {
     const s = loadSettings();
     setMusicVolume(s.musicVolume);
     setMusicMuted(s.muted);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setTurtleFrame((f) => (f + 1) % 2), 350);
+    return () => clearInterval(id);
   }, []);
 
   const startMenuMusic = () => {
