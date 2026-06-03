@@ -61,8 +61,8 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
         {/* 2. Logo Judul — presisi di tengah */}
         <img
-    src={logoTitle}
-          className="absolute top-[12%] left-[20%] -translate-x-1/2 w-[min(min(75vw,600px)] animate-float-soft pixelated z-20"
+ src={logoTitle}
+          className="absolute top-[18%] left-1/2 -translate-x-1/2 w-[min(76vw,660px)] animate-float-soft pixelated z-20"
           alt="Derawan Heroes Title"
           draggable={false}
         />
