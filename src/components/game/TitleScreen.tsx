@@ -59,26 +59,28 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo Judul + Penyu Tora — sejajar, di tengah, tanpa jarak */}
-        <div className="absolute top-[6%] left-1/2 -translate-x-1/2 flex items-center justify-center gap-0 w-[95%] max-w-[1000px] z-20">
-          <img
-            src={logoTitle}
-            className="w-[70%] animate-float-soft pixelated"
-            alt="Derawan Heroes Title"
-            draggable={false}
-          />
-          <img
-            src={turtle}
-            className="w-[28%] -ml-2 animate-float-soft pixelated"
-            alt="Turtle Character"
-            draggable={false}
-          />
+        {/* 2. Logo Judul (pas di tengah) + Penyu Tora (nempel kanan logo) */}
+        <div className="absolute top-[6%] left-1/2 -translate-x-1/2 z-20">
+          <div className="relative inline-block">
+            <img
+              src={logoTitle}
+              className="block w-[min(70vw,640px)] animate-float-soft pixelated"
+              alt="Derawan Heroes Title"
+              draggable={false}
+            />
+            <img
+              src={turtleFrame === 0 ? turtleFrame1.url : turtleFrame2.url}
+              className="absolute left-full top-1/2 -translate-y-1/2 -ml-3 w-[45%] pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)]"
+              alt="Turtle Character"
+              draggable={false}
+            />
+          </div>
         </div>
 
-        {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri, super gede */}
+        {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri di pasir */}
         <img 
           src={beachItems} 
-          className="absolute bottom-[2%] left-[1%] w-[380px] sm:w-[500px] md:w-[620px] h-auto pixelated z-10" 
+          className="absolute bottom-[6%] left-[1%] w-[300px] sm:w-[400px] md:w-[500px] h-auto pixelated z-10" 
           alt="Beach Items" 
           draggable={false} 
         />
