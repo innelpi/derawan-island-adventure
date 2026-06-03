@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import bgSkySea from "@/assets/bg-sky-sea.png";
 import logoTitle from "@/assets/title-game.png";
-import turtle from "@/assets/turtle (2).png";
+import turtle from "@/assets/turtle.png";
 import beachItems from "@/assets/set-up-pixels.png";
 import { SFX, unlockAudio } from "@/game/audio";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
@@ -54,24 +54,23 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 2. Logo Judul Utama */}
         <img 
           src={logoTitle} 
-          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[85%] max-w-[850px] animate-bounce-slow pixelated" 
+          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[85%] max-w-[850px] animate-float-soft pixelated" 
           alt="Derawan Island Title" 
           draggable={false} 
         />
 
-        {/* 3. Penyu (Kita atur koordinatnya menimpa ruang kosong logo) */}
-        {/* 💡 TIPS: Kalau penyunya kurang ke kiri/nempel, perbesar angka right-[22%] jadi right-[25%] atau right-[28%] */}
+        {/* 3. Penyu Tora — karakter utama, gede di samping tanda seru */}
         <img 
           src={turtle} 
-          className="absolute top-[40%] right-[34%] w-[700px] sm:w-[150px] md:w-[180px] animate-float-turtle pixelated z-10" 
+          className="absolute top-[2%] right-[4%] w-[200px] sm:w-[280px] md:w-[360px] animate-float-soft pixelated z-20" 
           alt="Turtle Character" 
           draggable={false} 
         />
 
-        {/* 4. Properti Pantai (Super Gede di atas Pasir) */}
+        {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri, super gede */}
         <img 
           src={beachItems} 
-          className="absolute bottom-[3%] left-[2%] w-[280px] sm:w-[380px] md:w-[460px] h-auto pixelated" 
+          className="absolute bottom-[2%] left-[1%] w-[380px] sm:w-[500px] md:w-[620px] h-auto pixelated z-10" 
           alt="Beach Items" 
           draggable={false} 
         />
