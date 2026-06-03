@@ -51,21 +51,21 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo Judul Utama */}
-        <img 
-          src={logoTitle} 
-          className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[85%] max-w-[850px] animate-float-soft pixelated" 
-          alt="Derawan Island Title" 
-          draggable={false} 
-        />
-
-        {/* 3. Penyu Tora — karakter utama, gede di samping tanda seru */}
-        <img 
-          src={turtle} 
-          className="absolute top-[2%] right-[4%] w-[200px] sm:w-[280px] md:w-[360px] animate-float-soft pixelated z-20" 
-          alt="Turtle Character" 
-          draggable={false} 
-        />
+        {/* 2. Logo Judul + Penyu Tora — sejajar, di tengah, tanpa jarak */}
+        <div className="absolute top-[6%] left-1/2 -translate-x-1/2 flex items-center justify-center gap-0 w-[95%] max-w-[1000px] z-20">
+          <img
+            src={logoTitle}
+            className="w-[70%] animate-float-soft pixelated"
+            alt="Derawan Heroes Title"
+            draggable={false}
+          />
+          <img
+            src={turtle}
+            className="w-[28%] -ml-2 animate-float-soft pixelated"
+            alt="Turtle Character"
+            draggable={false}
+          />
+        </div>
 
         {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri, super gede */}
         <img 
