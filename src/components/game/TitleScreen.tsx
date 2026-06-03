@@ -61,19 +61,13 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
         {/* 2. Logo Judul — presisi di tengah */}
         <img
-         src={logoTitle}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[min(70vw,640px)] animate-float-soft pixelated z-20"
+    src={logoTitle}
+          className="absolute top-[12%] left-1/2 -translate-x-1/2 w-[min(70vw,540px)] animate-float-soft pixelated z-20"
           alt="Derawan Heroes Title"
           draggable={false}
         />
-        {/* Penyu Tora — nempel di kanan logo, 2 frame bergantian */}
-        <div
-          className="absolute top-[6%] z-20 pointer-events-none"
-          style={{
-            left: "calc(50% + min(35vw, 320px) - 12px)",
-            width: "min(31.5vw, 288px)",
-          }}
-        >
+{/* Penyu Tora — nempel di kanan logo, 2 frame bergantian */}
+          <div className="absolute top-[10%] z-20 pointer-events-none" style={{left: "calc(50% + min(35vw, 270px) - 30px)", width: "min(25vw, 220px)", }} >
           <div className="relative w-full animate-float-soft" style={{ aspectRatio: "1 / 1" }}>
             <img
            src={turtleFrame1}
