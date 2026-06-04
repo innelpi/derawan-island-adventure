@@ -62,7 +62,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 2. Logo Judul + Penyu — presisi di tengah, penyu nempel kanan "!" */}
         <div
           className="absolute top-[10%] z-20 flex items-center justify-center gap-0 pointer-events-none"
-          style={{ left: "calc(50% - 8px)", transform: "translateX(-50%)", width: "min(86vw, 760px)" }}
+          style={{ left: "calc(50% + 15px)", transform: "translateX(-50%)", width: "min(86vw, 760px)" }}
         >
           <img
             src={logoTitle}
@@ -96,6 +96,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         <img
           src={beachItems}
           className="absolute bottom-[4%] left-[1%] w-[320px] sm:w-[440px] md:w-[560px] h-auto pixelated z-10"
+          style={{ transform: "translateY(18px)" }}
           alt="Beach Items"
           draggable={false}
         />
