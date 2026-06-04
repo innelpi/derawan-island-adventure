@@ -59,28 +59,30 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo Judul — presisi di tengah */}
-        <img
- src={logoTitle}
-          className="absolute top-[18%] right-[28%] -translate-x-1/2 w-[min(80vw,670px)] animate-float-soft pixelated z-20"
-          alt="Derawan Heroes Title"
-          draggable={false}
-        />
-        { /* Penyu Tora — Sekarang nongkrong di bawah samping tenda/properti seru */ }
-<div className="absolute bottom-[6%] left-[260px] sm:left-[350px] md:left-[440px] z-20 pointer-events-none w-[120px] sm:w-[160px] md:w-[200px]">
-  <div className="relative w-full animate-float-soft" style={{ aspectRatio: "1 / 1" }}>
-    <img src={turtleFrame1} className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75" style={{ opacity: turtleFrame === 0 ? 1 : 0 }} alt="Turtle Character" draggable={false} />
-    <img src={turtleFrame2} className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75" style={{ opacity: turtleFrame === 1 ? 1 : 0 }} alt="" aria-hidden draggable={false} />
-  </div>
-</div>
-           src={turtleFrame1}
+        {/* 2. Logo Judul + Penyu — presisi di tengah, penyu nempel kanan "!" */}
+        <div
+          className="absolute top-[10%] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-0 pointer-events-none"
+          style={{ width: "min(86vw, 760px)" }}
+        >
+          <img
+            src={logoTitle}
+            className="w-full h-auto animate-float-soft pixelated"
+            alt="Derawan Heroes Title"
+            draggable={false}
+          />
+          <div
+            className="relative shrink-0 -ml-2 animate-float-soft"
+            style={{ width: "min(22vw, 190px)", aspectRatio: "1 / 1" }}
+          >
+            <img
+              src={turtleFrame1}
               className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
               style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
               alt="Turtle Character"
               draggable={false}
             />
             <img
-         src={turtleFrame2}
+              src={turtleFrame2}
               className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
               style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
               alt=""
@@ -91,11 +93,11 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         </div>
 
         {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri di pasir */}
-        <img 
-          src={beachItems} 
-          className="absolute bottom-[6%] left-[1%] w-[300px] sm:w-[400px] md:w-[500px] h-auto pixelated z-10" 
-          alt="Beach Items" 
-          draggable={false} 
+        <img
+          src={beachItems}
+          className="absolute bottom-[4%] left-[1%] w-[320px] sm:w-[440px] md:w-[560px] h-auto pixelated z-10"
+          alt="Beach Items"
+          draggable={false}
         />
       </div>
       {/* ============ OVERLAY: gelombang transparan tipis ============ */}
