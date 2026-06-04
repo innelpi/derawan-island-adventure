@@ -61,8 +61,8 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
         {/* 2. Logo Judul + Penyu — presisi di tengah, penyu nempel kanan "!" */}
         <div
-          className="absolute top-[10%] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-0 pointer-events-none"
-          style={{ width: "min(86vw, 760px)" }}
+          className="absolute top-[10%] z-20 flex items-center justify-center gap-0 pointer-events-none"
+          style={{ left: "calc(50% - 8px)", transform: "translateX(-50%)", width: "min(86vw, 760px)" }}
         >
           <img
             src={logoTitle}
