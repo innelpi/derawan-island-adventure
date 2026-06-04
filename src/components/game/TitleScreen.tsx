@@ -96,6 +96,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         <img
           src={beachItems}
           className="absolute bottom-[4%] left-[1%] w-[320px] sm:w-[440px] md:w-[560px] h-auto pixelated z-10"
+          style={{ transform: "translateY(18px)" }}
           alt="Beach Items"
           draggable={false}
         />
