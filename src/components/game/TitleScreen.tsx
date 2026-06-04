@@ -95,8 +95,8 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
         {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri di pasir */}
         <img
           src={beachItems}
-          className="absolute bottom-[4%] left-[1%] w-[320px] sm:w-[440px] md:w-[560px] h-auto pixelated z-10"
-          style={{ transform: "translateY(30px)" }}
+          className="absolute bottom-[2%] left-[10%] w-[320px] sm:w-[440px] md:w-[560px] h-auto pixelated z-10"
+          style={{ transform: "translateY(50px)" }}
           alt="Beach Items"
           draggable={false}
         />
