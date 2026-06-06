@@ -160,9 +160,9 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/55" />
 
       {/* ============ MENU ============ */}
-      <div className="relative z-10 h-full w-full flex-col p-4 sm:p-6 flex items-center justify-end">
+      <div className="relative z-10 h-full w-full flex-col p-4 sm:p-6 flex items-center sm:items-start justify-end">
         {/* MENU BUTTONS */}
-        <div className="mb-16 flex w-full max-w-[280px] flex-col gap-4 sm:mb-24">
+        <div className="mb-16 flex w-full max-w-[280px] flex-col gap-4 sm:mb-24 sm:ml-[8%]">
           <button
             onClick={() => {
               unlockAudio();
