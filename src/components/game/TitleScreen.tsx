@@ -59,38 +59,41 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-        {/* 2. Logo Judul + Penyu — center konsisten di semua layar */}
-        <div
-          className="absolute top-[8%] sm:top-[10%] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-0 pointer-events-none"
-          style={{ width: "min(92vw, 760px)" }}
-        >
-          <img
-            src={logoTitle}
-            className="w-[78%] sm:w-[80%] h-auto animate-float-soft pixelated"
-            alt="Derawan Heroes Title"
-            draggable={false}
-          />
-          <div
-            className="relative shrink-0 -ml-3 sm:-ml-4 animate-float-soft"
-            style={{ width: "min(20vw, 160px)", aspectRatio: "1 / 1" }}
-          >
-            <img
-              src={turtleFrame1}
-              className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
-              style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
-              alt="Turtle Character"
-              draggable={false}
-            />
-            <img
-              src={turtleFrame2}
-              className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
-              style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
-              alt=""
-              aria-hidden
-              draggable={false}
-            />
-          </div>
-        </div>
+       {/* 2. Logo Judul + Penyu — center konsisten di semua layar */}
+<div
+  className="absolute top-[8%] sm:top-[10%] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-0 pointer-events-none"
+  style={{ width: "min(92vw, 760px)" }}
+>
+  {/* PENYU DIPINDAH KE ATAS AGAR MUNCUL DI KIRI */}
+  <div
+    className="relative shrink-0 -mr-3 sm:-mr-4 animate-float-soft z-10"
+    style={{ width: "min(20vw, 160px)", aspectRatio: "1 / 1" }}
+  >
+    <img
+      src={turtleFrame1}
+      className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
+      style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
+      alt="Turtle Character"
+      draggable={false}
+    />
+    <img
+      src={turtleFrame2}
+      className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
+      style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
+      alt=""
+      aria-hidden
+      draggable={false}
+    />
+  </div>
+
+  {/* JUDUL MUNCUL SETELAH PENYU (DI KANANNYA PENYU) */}
+  <img
+    src={logoTitle}
+    className="w-[78%] sm:w-[80%] h-auto animate-float-soft pixelated"
+    alt="Derawan Heroes Title"
+    draggable={false}
+  />
+</div>
 
 
         {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri di pasir. Di HP boleh terpotong/hilang */}
