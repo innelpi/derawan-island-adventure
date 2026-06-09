@@ -59,15 +59,23 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
           draggable={false} 
         />
 
-       {/* 2. Logo Judul + Penyu — center konsisten di semua layar */}
+       {/* 2. Logo Judul + Penyu — judul di tengah, penyu di kanan persis sebelah "Heroes" */}
 <div
-  className="absolute top-[8%] sm:top-[10%] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-0 pointer-events-none"
-  style={{ width: "min(92vw, 760px)" }}
+  className="absolute top-[10%] sm:top-[12%] left-1/2 -translate-x-1/2 z-20 flex items-center justify-center gap-0 pointer-events-none"
+  style={{ width: "min(94vw, 780px)" }}
 >
-  {/* PENYU DIPINDAH KE ATAS AGAR MUNCUL DI KIRI */}
+  {/* JUDUL DI TENGAH/KIRI */}
+  <img
+    src={logoTitle}
+    className="w-[70%] sm:w-[78%] h-auto animate-float-soft pixelated shrink-0"
+    alt="Derawan Heroes Title"
+    draggable={false}
+  />
+
+  {/* PENYU DI KANAN, MEPET KE TULISAN "HEROES" */}
   <div
-    className="relative shrink-0 -mr-3 sm:-mr-4 animate-float-soft z-10"
-    style={{ width: "min(20vw, 160px)", aspectRatio: "1 / 1" }}
+    className="relative shrink-0 -ml-2 sm:-ml-3 animate-float-soft z-10"
+    style={{ width: "min(22vw, 150px)", aspectRatio: "1 / 1" }}
   >
     <img
       src={turtleFrame1}
@@ -85,15 +93,8 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
       draggable={false}
     />
   </div>
-
-  {/* JUDUL MUNCUL SETELAH PENYU (DI KANANNYA PENYU) */}
-  <img
-    src={logoTitle}
-    className="w-[78%] sm:w-[80%] h-auto animate-float-soft pixelated"
-    alt="Derawan Heroes Title"
-    draggable={false}
-  />
 </div>
+
 
 
         {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri di pasir. Di HP boleh terpotong/hilang */}
