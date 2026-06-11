@@ -61,7 +61,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
        {/* 2. Logo Judul + Penyu — judul di tengah, penyu di kanan persis sebelah "Heroes" */}
 <div
-  className="absolute top-[8%] sm:top-[10%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:block items-center justify-center gap-2 sm:gap-0 pointer-events-none px-0 sm:px-2"
+  className="absolute top-[8%] sm:top-[2%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:block items-center justify-center gap-2 sm:gap-0 pointer-events-none px-0 sm:px-2"
   style={{ width: "min(120vw, 980px)" }}
 >
   {/* JUDUL — desktop benar-benar center via block + mx-auto */}
