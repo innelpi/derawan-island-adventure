@@ -61,21 +61,21 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
        {/* 2. Logo Judul + Penyu — judul di tengah, penyu di kanan persis sebelah "Heroes" */}
 <div
-  className="absolute top-[8%] sm:top-[12%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-0 pointer-events-none px-0 sm:px-2"
-  style={{ width: "min(120vw, 780px)" }}
+  className="absolute top-[8%] sm:top-[10%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:block items-center justify-center gap-2 sm:gap-0 pointer-events-none px-0 sm:px-2"
+  style={{ width: "min(120vw, 980px)" }}
 >
-  {/* JUDUL */}
+  {/* JUDUL — desktop benar-benar center via block + mx-auto */}
   <img
     src={logoTitle}
-    className="w-[120vw] sm:w-[78%] max-w-none sm:max-w-full h-auto max-h-[70vh] sm:max-h-none object-contain animate-float-soft pixelated shrink-0"
+    className="w-[120vw] sm:w-[100%] max-w-none sm:max-w-full h-auto max-h-[70vh] sm:max-h-none object-contain animate-float-soft pixelated shrink-0 sm:mx-auto sm:block"
     alt="Derawan Heroes Title"
     draggable={false}
   />
 
-  {/* PENYU — di bawah judul (mobile), di kanan judul (desktop) */}
+  {/* PENYU — mobile di bawah judul; desktop absolut di kanan supaya judul tetap center */}
   <div
-    className="relative shrink-0 -mt-2 sm:mt-0 sm:-ml-3 animate-float-soft z-10"
-    style={{ width: "clamp(110px, 32vw, 150px)", aspectRatio: "1 / 1" }}
+    className="relative shrink-0 -mt-2 sm:mt-0 animate-float-soft z-10 sm:absolute sm:top-1/2 sm:right-[-2%] sm:-translate-y-1/2"
+    style={{ width: "clamp(110px, 32vw, 170px)", aspectRatio: "1 / 1" }}
   >
     <img
       src={turtleFrame1}
