@@ -74,7 +74,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
   {/* PENYU — mobile di bawah judul; desktop absolut di kanan supaya judul tetap center */}
   <div
-    className="relative shrink-0 -mt-2 sm:mt-0 animate-float-soft z-10 sm:absolute sm:top-1/2 sm:right-[6%] sm:-translate-y-1/2"
+    className="relative shrink-0 -mt-2 sm:mt-0 animate-float-soft z-10 sm:absolute sm:top-1/2 sm:right-[18%] sm:-translate-y-1/2"
     style={{ width: "clamp(110px, 32vw, 170px)", aspectRatio: "1 / 1" }}
   >
     <img
