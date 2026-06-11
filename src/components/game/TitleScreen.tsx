@@ -61,13 +61,13 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
        {/* 2. Logo Judul + Penyu — judul di tengah, penyu di kanan persis sebelah "Heroes" */}
 <div
-  className="absolute top-[15%] sm:top-[12%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-0 pointer-events-none px-2"
-  style={{ width: "min(100vw, 780px)" }}
+  className="absolute top-[8%] sm:top-[12%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-0 pointer-events-none px-0 sm:px-2"
+  style={{ width: "min(120vw, 780px)" }}
 >
   {/* JUDUL */}
   <img
     src={logoTitle}
-    className="w-[100%] sm:w-[78%] h-auto max-h-[55vh] sm:max-h-none object-contain animate-float-soft pixelated shrink-0"
+    className="w-[120vw] sm:w-[78%] max-w-none sm:max-w-full h-auto max-h-[70vh] sm:max-h-none object-contain animate-float-soft pixelated shrink-0"
     alt="Derawan Heroes Title"
     draggable={false}
   />
