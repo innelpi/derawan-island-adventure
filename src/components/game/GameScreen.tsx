@@ -208,10 +208,11 @@ export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScre
       <div className="absolute right-3 top-3 z-30 flex gap-2">
         <button
           onClick={togglePause}
-          aria-label="Jeda permainan"
-          className="pixel-btn rounded border-2 border-foreground bg-card px-2 py-1 font-pixel text-[10px] text-card-foreground shadow-pixel sm:text-xs"
+          aria-label={paused ? "Lanjutkan permainan" : "Jeda permainan"}
+          title={paused ? "Lanjutkan permainan" : "Jeda permainan"}
+          className="pixel-btn fixed left-4 top-20 z-[60] min-h-11 min-2-[96px] rounded border-2 border-foreground bg card px-3 py-2 font-pixel text-[10px] text-card-foreground shadow-pixel transition-transform duration-150 hover:-translate-y-0.05 hover:brightness-110 active:translate-y-1 sm:top-24"
         >
-          ⏸
+          {paused ? "▶ LANJUT" : "⏸ PAUSE"}
         </button>
         <button
           onClick={toggleMute}
