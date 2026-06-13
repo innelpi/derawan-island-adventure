@@ -205,15 +205,16 @@ export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScre
       <Hud state={stateRef.current} />
 
       {/* Top-right buttons */}
-      <div className="absolute right-3 top-3 z-30 flex gap-2">
-        <button
-          onClick={togglePause}
-          aria-label={paused ? "Lanjutkan permainan" : "Jeda permainan"}
-          title={paused ? "Lanjutkan permainan" : "Jeda permainan"}
-          className="pixel-btn fixed left-4 top-20 z-[60] min-h-11 min-2-[96px] rounded border-2 border-foreground bg card px-3 py-2 font-pixel text-[10px] text-card-foreground shadow-pixel transition-transform duration-150 hover:-translate-y-0.05 hover:brightness-110 active:translate-y-1 sm:top-24"
-        >
-          {paused ? "▶ LANJUT" : "⏸ PAUSE"}
-        </button>
+      <div className="fixed left-4 top-20 z-[60] flex gap-2 sm:top-24">
+  <button
+    onClick={togglePause}
+    aria-label={paused ? "Lanjutkan permainan" : "Jeda permainan"}
+    title={paused ? "Lanjutkan permainan" : "Jeda permainan"}
+    className="pixel-btn min-h-11 min-w-[96px] rounded border-2 border-foreground bg-card px-3 py-2 font-pixel text-[10px] text-card-foreground shadow-pixel transition-transform duration-150 hover:-translate-y-0.5 hover:brightness-110 active:translate-y-1 sm:text-xs"
+  >
+    {paused ? "▶ LANJUT" : "⏸ PAUSE"}
+  </button>
+</div>
         <button
           onClick={toggleMute}
           aria-label={muted ? "Aktifkan suara" : "Matikan suara"}
