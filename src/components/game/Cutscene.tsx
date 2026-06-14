@@ -65,11 +65,11 @@ const PANELS_STAGE1: Panel[] = [
 
 const PANELS_STAGE2: Panel[] = [
   {
-    bg: "from-primary via-sea to-sea-deep",
+    bg: "from-yellow-200 via sky-sky-300 to-sky-500", 
     speaker: "hero",
     text: (n) => `Pantainya sudah bersih, tapi Tora bilang bahaya berikutnya ada di bawah laut… Saatnya menyelam!`,
     showHero: true,
-    emoji: "🤿",
+    emoji: "🌞",
   },
   {
     bg: "from-sea via-sea-deep to-trash",
