@@ -13,21 +13,21 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
   const stage3Locked = !settings.stage3Unlocked;
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center justify-center gap-6 overflow-y-auto bg-gradient-to-b from-sky to-sea-deep p-6">
+    <div className="relative flex h-full w-full flex-col items-center justify-center gap-6 overflow-y-auto bg-gradient-to-b from-sky-200 to-teal-100 p-6">
       <button
         onClick={() => {
           SFX.click();
           onBack();
         }}
-        className="absolute left-4 top-4 z-10 rounded border-2 border-foreground bg-card px-3 py-1 font-pixel text-[10px] shadow-pixel"
+        className="absolute left-4 top-4 z-10 rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
       >
         ◀ KEMBALI
       </button>
 
-      <h2 className="font-pixel text-2xl text-secondary text-shadow-pixel sm:text-3xl">
+      <h2 className="text-3xl font-bold text-amber-500 text-shadow-pixel sm:text-4xl">
         PILIH STAGE
       </h2>
-      <p className="font-body text-sm text-card-foreground/90 text-center max-w-md">
+      <p className="max-w-md text-center text-sm text-slate-700">
         Halo, <strong>{settings.playerName}</strong>! Kamu mau jadi pahlawan di mana hari ini?
       </p>
 
@@ -36,7 +36,7 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
           number={1}
           title="Pantai Derawan"
           desc="Bersihkan pantai dari monster sampah & kalahkan Litter King!"
-          gradient="from-sky to-sand"
+          gradient="bg-gradient-to-br from-sky-200 to-amber-100"
           emoji="🏖️"
           onClick={() => {
             SFX.click();
@@ -47,7 +47,7 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
           number={2}
           title="Karang Derawan"
           desc="Selamatkan terumbu karang dari jaring hantu & tumpahan oli!"
-          gradient="from-primary to-sea-deep"
+          gradient="bg-gradient-to-br from-teal-200 to-cyan-100"
           emoji="🪸"
           locked={stage2Locked}
           onClick={() => {
@@ -60,7 +60,7 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
           number={3}
           title="Laut Dalam"
           desc="Hadapi sang Plastic Tyrant di palung gelap, akhiri pencemaran selamanya!"
-          gradient="from-trash to-sea-deep"
+          gradient="bg-gradient-to-br from-indigo-200 to-violet-100"
           emoji="🌌"
           locked={stage3Locked}
           onClick={() => {
@@ -72,7 +72,7 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
       </div>
 
       {(stage2Locked || stage3Locked) && (
-        <p className="font-body text-xs text-card-foreground/80 text-center">
+        <p className="text-center text-xs text-slate-600">
           🔒 Selesaikan stage sebelumnya untuk membuka stage berikutnya!
         </p>
       )}
@@ -101,25 +101,25 @@ function StageCard({
     <button
       onClick={onClick}
       disabled={locked}
-      className={`pixel-btn group relative overflow-hidden rounded-md border-4 border-foreground bg-gradient-to-br ${gradient} p-5 text-left shadow-pixel-lg transition-transform active:translate-y-1 active:shadow-pixel ${
-        locked ? "opacity-60 cursor-not-allowed" : "hover:-translate-y-0.5"
+      className={`group relative overflow-hidden rounded-2xl border-2 border-white/50 p-5 text-left shadow-lg transition-all ${gradient} ${
+        locked ? "opacity-60 cursor-not-allowed" : "hover:-translate-y-1 hover:shadow-xl"
       }`}
     >
       <div className="flex items-center gap-3">
         <span className="text-4xl" aria-hidden>{emoji}</span>
         <div>
-          <div className="font-pixel text-[10px] uppercase text-card-foreground/90">
+          <div className="text-[10px] font-bold uppercase text-slate-600">
             STAGE {number}
           </div>
-          <div className="font-pixel text-base text-foreground sm:text-lg">{title}</div>
+          <div className="text-base font-bold text-slate-800 sm:text-lg">{title}</div>
         </div>
       </div>
-      <p className="mt-3 font-body text-xs leading-snug text-card-foreground sm:text-sm">
+      <p className="mt-3 text-xs leading-snug text-slate-700 sm:text-sm">
         {desc}
       </p>
       {locked && (
-        <div className="absolute inset-0 flex items-center justify-center bg-foreground/40 backdrop-blur-[1px]">
-          <span className="font-pixel text-2xl">🔒</span>
+        <div className="absolute inset-0 flex items-center justify-center rounded-2xl bg-slate-900/30 backdrop-blur-[2px]">
+          <span className="text-4xl drop-shadow-lg">🔒</span>
         </div>
       )}
     </button>

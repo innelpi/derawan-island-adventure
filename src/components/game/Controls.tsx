@@ -15,7 +15,6 @@ export function VirtualJoystick({ onChange }: JoystickProps) {
   useEffect(() => {
     const handle = (e: TouchEvent) => {
       if (!baseRef.current) return;
-      // start
       if (e.type === "touchstart") {
         for (const t of Array.from(e.changedTouches)) {
           const r = baseRef.current.getBoundingClientRect();
@@ -77,13 +76,13 @@ export function VirtualJoystick({ onChange }: JoystickProps) {
   return (
     <div
       ref={baseRef}
-      className={`absolute bottom-6 left-6 h-28 w-28 rounded-full border-4 border-foreground/60 bg-foreground/20 backdrop-blur-sm transition-opacity ${
+      className={`absolute bottom-6 left-6 h-28 w-28 rounded-full border-2 border-white/50 bg-slate-900/20 shadow-lg backdrop-blur-sm transition-opacity ${
         active ? "opacity-100" : "opacity-70"
       }`}
       style={{ touchAction: "none" }}
     >
       <div
-        className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-foreground/80 bg-primary shadow-pixel"
+        className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white/60 bg-gradient-to-b from-sky-400 to-sky-600 shadow-lg"
         style={{ transform: `translate(calc(-50% + ${knob.x}px), calc(-50% + ${knob.y}px))` }}
       />
     </div>
@@ -111,8 +110,8 @@ export function ActionButton({ label, onPress, className = "", disabled, big }: 
         e.preventDefault();
         if (!disabled) onPress();
       }}
-      className={`pixel-btn select-none rounded-full border-4 border-foreground font-pixel text-xs uppercase shadow-pixel-lg active:translate-y-1 active:shadow-pixel ${
-        big ? "h-20 w-20" : "h-14 w-14 text-[10px]"
+      className={`select-none rounded-full border-2 border-white/60 font-bold text-white shadow-lg transition active:translate-y-1 ${
+        big ? "h-20 w-20 bg-gradient-to-b from-red-400 to-red-600" : "h-14 w-14 bg-gradient-to-b from-sky-400 to-sky-600 text-[10px]"
       } ${disabled ? "opacity-40" : ""} ${className}`}
       style={{ touchAction: "none" }}
     >
