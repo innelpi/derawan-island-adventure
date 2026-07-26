@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
-import bgSkySea from "@/assets/bg-sky-sea.png";
-import logoTitle from "@/assets/title-game.png";
-import turtleFrame1 from "@/assets/turtle-frame1.png";
-import turtleFrame2 from "@/assets/turtle-frame2.png";
-import beachItems from "@/assets/set-up-pixels.png";
+import titleBg from "@/assets/title-bg.jpg";
+import titleLogo from "@/assets/title-logo.png";
+import turtleIdle from "@/assets/turtle-idle.png";
+import turtleWave from "@/assets/turtle-wave.png";
+import beachBag from "@/assets/beach-bag.png";
+import sunglasses from "@/assets/sunglasses.png";
 import { SFX, unlockAudio } from "@/game/audio";
 import { playMusic, setMusicMuted, setMusicVolume } from "@/game/music";
 import { loadSettings } from "@/game/settings";
@@ -23,7 +24,7 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
   }, []);
 
   useEffect(() => {
-    const id = setInterval(() => setTurtleFrame((f) => (f + 1) % 2), 350);
+    const id = setInterval(() => setTurtleFrame((f) => (f + 1) % 2), 600);
     return () => clearInterval(id);
   }, []);
 
@@ -32,10 +33,9 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
     playMusic("menu");
   };
 
-  // Sparkle halus untuk overlay
   const sparkles = useMemo(
     () =>
-      Array.from({ length: 12 }).map((_, i) => ({
+      Array.from({ length: 10 }).map((_, i) => ({
         left: (i * 53) % 100,
         top: (i * 37) % 90,
         delay: (i * 0.31) % 4,
@@ -46,94 +46,65 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
 
   return (
     <div
-      className="relative h-full w-full overflow-hidden bg-[hsl(220,40%,15%)]"
+      className="relative h-full w-full overflow-hidden"
       onPointerDown={startMenuMusic}
     >
-{/* ============ BACKGROUND TERPISAH (ANIMASI) ============ */}
-      <div className="absolute inset-0 h-full w-full">
-        {/* 1. Background Langit & Laut (Statis) */}
-        <img 
-          src={bgSkySea} 
-          className="absolute inset-0 w-full h-full object-cover" 
-          alt="Background" 
-          draggable={false} 
-        />
+      {/* Background pantai Derawan */}
+      <img
+        src={titleBg}
+        className="absolute inset-0 h-full w-full object-cover"
+        alt="Pulau Derawan"
+        draggable={false}
+      />
 
-       {/* 2. Logo Judul + Penyu — judul di tengah, penyu di kanan persis sebelah "Heroes" */}
-<div
-  className="absolute top-[8%] sm:top-[2%] left-1/2 -translate-x-1/2 z-20 flex flex-col sm:block items-center justify-center gap-2 sm:gap-0 pointer-events-none px-0 sm:px-2"
-  style={{ width: "min(120vw, 980px)" }}
->
-  {/* JUDUL — desktop benar-benar center via block + mx-auto */}
-  <img
-    src={logoTitle}
-    className="w-[120vw] sm:w-[100%] max-w-none sm:max-w-full h-auto max-h-[70vh] sm:max-h-none object-contain animate-float-soft pixelated shrink-0 sm:mx-auto sm:block"
-    alt="Derawan Heroes Title"
-    draggable={false}
-  />
-
-  {/* PENYU — mobile di bawah judul; desktop absolut di kanan supaya judul tetap center */}
-  <div
-    className="relative shrink-0 -mt-2 sm:mt-0 animate-float-soft z-10 sm:absolute sm:top-1/2 sm:right-[18%] sm:-translate-y-1/2"
-    style={{ width: "clamp(110px, 32vw, 170px)", aspectRatio: "1 / 1" }}
-  >
-    <img
-      src={turtleFrame1}
-      className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
-      style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
-      alt="Turtle Character"
-      draggable={false}
-    />
-    <img
-      src={turtleFrame2}
-      className="absolute inset-0 w-full h-full pixelated drop-shadow-[0_6px_10px_rgba(0,0,0,0.35)] transition-opacity duration-75"
-      style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
-      alt=""
-      aria-hidden
-      draggable={false}
-    />
-  </div>
-</div>
-
-
-
-
-        {/* 4. Properti Pantai (Tas + Kacamata) — pojok kiri di pasir. Di HP boleh terpotong/hilang */}
+      {/* Logo + Penyu — selalu center, penyu di samping kanan */}
+      <div className="absolute left-1/2 top-[8%] z-20 flex -translate-x-1/2 items-start justify-center sm:top-[2%]">
         <img
-          src={beachItems}
-          className="absolute bottom-[2%] left-[10%] w-[320px] sm:w-[440px] md:w-[560px] h-auto pixelated z-10 hidden sm:block"
-          style={{ transform: "translateY(50px)" }}
-          alt="Beach Items"
+          src={titleLogo}
+          className="h-auto w-[85vw] max-w-[700px] animate-float-soft drop-shadow-[0_8px_16px_rgba(0,0,0,0.35)]"
+          alt="Derawan Heroes"
+          draggable={false}
+        />
+        <div
+          className="relative -ml-10 sm:-ml-16 animate-float-soft"
+          style={{ width: "clamp(100px, 28vw, 190px)", aspectRatio: "1 / 1" }}
+        >
+          <img
+            src={turtleIdle}
+            className="absolute inset-0 h-full w-full object-contain transition-opacity duration-200"
+            style={{ opacity: turtleFrame === 0 ? 1 : 0 }}
+            alt="Tora si penyu"
+            draggable={false}
+          />
+          <img
+            src={turtleWave}
+            className="absolute inset-0 h-full w-full object-contain transition-opacity duration-200"
+            style={{ opacity: turtleFrame === 1 ? 1 : 0 }}
+            alt=""
+            aria-hidden
+            draggable={false}
+          />
+        </div>
+      </div>
+
+      {/* Properti pantai pojok kiri bawah */}
+      <div className="pointer-events-none absolute bottom-[3%] left-[3%] z-10 hidden items-end gap-2 sm:flex">
+        <img
+          src={beachBag}
+          className="h-auto w-[clamp(90px,18vw,220px)] animate-float-soft drop-shadow-[0_6px_12px_rgba(0,0,0,0.25)]"
+          alt="Tas pantai"
+          draggable={false}
+        />
+        <img
+          src={sunglasses}
+          className="mb-2 h-auto w-[clamp(50px,10vw,120px)] animate-float-soft drop-shadow-[0_4px_8px_rgba(0,0,0,0.25)]"
+          style={{ animationDelay: "0.3s" }}
+          alt="Kacamata"
           draggable={false}
         />
       </div>
-      {/* ============ OVERLAY: gelombang transparan tipis ============ */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-[20%]">
-        <svg
-          viewBox="0 0 1440 80"
-          preserveAspectRatio="none"
-          className="absolute left-0 right-0 top-1/4 h-10 w-[200%] wave-slide-slow"
-        >
-          <path
-            d="M0,40 Q180,15 360,40 T720,40 T1080,40 T1440,40 L1440,80 L0,80 Z M1440,40 Q1620,15 1800,40 T2160,40 T2520,40 T2880,40 L2880,80 L1440,80 Z"
-            fill="white"
-            opacity="0.18"
-          />
-        </svg>
-        <svg
-          viewBox="0 0 1440 80"
-          preserveAspectRatio="none"
-          className="absolute left-0 right-0 top-1/2 h-10 w-[200%] wave-slide-fast"
-        >
-          <path
-            d="M0,40 Q180,5 360,40 T720,40 T1080,40 T1440,40 L1440,80 L0,80 Z M1440,40 Q1620,5 1800,40 T2160,40 T2520,40 T2880,40 L2880,80 L1440,80 Z"
-            fill="white"
-            opacity="0.22"
-          />
-        </svg>
-      </div>
 
-      {/* ============ OVERLAY: sparkle cahaya ============ */}
+      {/* Sparkle lembut */}
       {sparkles.map((s, i) => (
         <div
           key={i}
@@ -150,33 +121,30 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
               width: s.size,
               height: s.size,
               boxShadow: `0 0 ${s.size * 4}px hsl(45,100%,80%)`,
-              opacity: 0.7,
+              opacity: 0.6,
             }}
           />
         </div>
       ))}
 
-      {/* ============ VIGNETTE biar teks kontras ============ */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/55" />
+      {/* Vignette halus */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/40" />
 
-      {/* ============ MENU ============ */}
-      <div className="relative z-10 h-full w-full flex flex-col items-center justify-end p-4 sm:p-6">
-        {/* MENU BUTTONS — center konsisten di semua layar */}
-        <div className="mb-16 flex w-full max-w-[280px] flex-col gap-4 sm:mb-24">
+      {/* Menu tombol */}
+      <div className="relative z-10 flex h-full w-full flex-col items-center justify-end p-4 sm:p-6">
+        <div className="mb-16 flex w-full max-w-[320px] flex-col gap-4 sm:mb-24">
           <button
             onClick={() => {
               unlockAudio();
               SFX.click();
               onPlay();
             }}
-            className="menu-btn group relative w-full rounded-md border-4 border-foreground px-6 py-4 font-pixel text-base text-white shadow-pixel-lg transition-all hover:scale-[1.05] hover:rotate-[-1deg] active:translate-y-1 active:shadow-pixel sm:text-lg"
+            className="group relative w-full rounded-2xl border-2 border-white/40 px-6 py-4 font-bold text-white shadow-[0_6px_0_#145c32,0_10px_20px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-1 hover:scale-[1.03] active:translate-y-1 active:shadow-[0_2px_0_#145c32,0_4px_8px_rgba(0,0,0,0.25)] sm:text-lg"
             style={{
-              background: "linear-gradient(180deg, hsl(145,80%,50%) 0%, hsl(145,75%,38%) 100%)",
-              animationDelay: "0s",
+              background: "linear-gradient(180deg, #4ade80 0%, #22c55e 50%, #16a34a 100%)",
             }}
             aria-label="Mulai bermain"
           >
-            <span className="absolute inset-x-0 top-0 h-1/2 rounded-t-sm bg-white/25" />
             <span className="relative flex items-center justify-center gap-2">
               <span className="text-xl">▶</span> BERMAIN
             </span>
@@ -188,13 +156,12 @@ export function TitleScreen({ onPlay, onSettings }: TitleScreenProps) {
               SFX.click();
               onSettings();
             }}
-            className="menu-btn group relative w-full rounded-md border-4 border-foreground px-6 py-3 font-pixel text-sm text-white shadow-pixel transition-all hover:scale-[1.05] hover:rotate-[1deg] active:translate-y-1 sm:text-base"
+            className="group relative w-full rounded-2xl border-2 border-white/40 px-6 py-3 font-bold text-white shadow-[0_6px_0_#5b21b6,0_10px_20px_rgba(0,0,0,0.25)] transition-all hover:-translate-y-1 hover:scale-[1.03] active:translate-y-1 active:shadow-[0_2px_0_#5b21b6,0_4px_8px_rgba(0,0,0,0.25)] sm:text-base"
             style={{
-              background: "linear-gradient(180deg, hsl(280,70%,60%) 0%, hsl(280,65%,42%) 100%)",
-              animationDelay: "0.15s",
+              background: "linear-gradient(180deg, #a78bfa 0%, #8b5cf6 50%, #7c3aed 100%)",
             }}
+            aria-label="Pengaturan"
           >
-            <span className="absolute inset-x-0 top-0 h-1/2 rounded-t-sm bg-white/25" />
             <span className="relative flex items-center justify-center gap-2">
               <span>⚙</span> PENGATURAN
             </span>
