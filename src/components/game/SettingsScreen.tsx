@@ -42,17 +42,17 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
   };
 
   return (
-    <div className="relative flex h-full w-full flex-col items-center overflow-y-auto bg-gradient-to-b from-sky to-primary/40 p-4 sm:p-8">
-      <div className="w-full max-w-md animate-pop-in rounded-md border-4 border-foreground bg-card p-5 shadow-pixel-lg sm:p-6">
+    <div className="relative flex h-full w-full flex-col items-center overflow-y-auto bg-gradient-to-b from-sky-200 to-teal-100 p-4 sm:p-8">
+      <div className="w-full max-w-md animate-pop-in rounded-2xl border border-white/40 bg-white/90 p-5 shadow-[0_12px_40px_rgba(0,0,0,0.15)] backdrop-blur-sm sm:p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-pixel text-base sm:text-lg">⚙ PENGATURAN</h2>
+          <h2 className="text-lg font-bold text-slate-800">⚙ Pengaturan</h2>
           <button
             onClick={() => {
               SFX.click();
               onBack();
             }}
             aria-label="Tutup pengaturan"
-            className="rounded border-2 border-foreground bg-background px-2 py-1 font-pixel text-[10px]"
+            className="rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-600 transition hover:bg-slate-200"
           >
             ✕
           </button>
@@ -60,27 +60,27 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
 
         {/* Player name */}
         <div className="mb-5 space-y-2">
-          <label className="font-pixel text-[10px] uppercase">👤 Nama Pemain</label>
+          <label className="text-xs font-bold uppercase text-slate-500">👤 Nama Pemain</label>
           <input
             type="text"
             value={name}
             maxLength={14}
             onChange={(e) => setName(e.target.value)}
             placeholder="Pahlawan"
-            className="w-full rounded border-4 border-foreground bg-background px-3 py-2 font-body text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="w-full rounded-xl border-2 border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-sky-400"
           />
-          <p className="font-body text-xs text-muted-foreground">
+          <p className="text-xs text-slate-500">
             Maksimal 14 karakter. Nama kamu akan dipakai di dialog & layar kemenangan!
           </p>
         </div>
 
         {/* Mute */}
-        <div className="mb-5 flex items-center justify-between rounded border-4 border-foreground bg-background p-3">
-          <span className="font-pixel text-[10px] uppercase">{muted ? "🔇" : "🔊"} Suara</span>
+        <div className="mb-5 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <span className="text-xs font-bold uppercase text-slate-600">{muted ? "🔇" : "🔊"} Suara</span>
           <button
             onClick={toggleMute}
-            className={`pixel-btn rounded border-4 border-foreground px-4 py-1 font-pixel text-[10px] shadow-pixel ${
-              muted ? "bg-destructive text-destructive-foreground" : "bg-success text-white"
+            className={`rounded-full px-4 py-1 text-xs font-bold text-white transition ${
+              muted ? "bg-red-500" : "bg-emerald-500"
             }`}
           >
             {muted ? "OFF" : "ON"}
@@ -90,8 +90,8 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
         {/* SFX volume */}
         <div className="mb-5 space-y-2">
           <div className="flex items-center justify-between">
-            <label className="font-pixel text-[10px] uppercase">🎮 Volume SFX</label>
-            <span className="font-pixel text-[10px]">{Math.round(sfx * 100)}%</span>
+            <label className="text-xs font-bold uppercase text-slate-500">🎮 Volume SFX</label>
+            <span className="text-xs font-bold text-slate-600">{Math.round(sfx * 100)}%</span>
           </div>
           <input
             type="range"
@@ -101,15 +101,15 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
             value={sfx}
             onChange={(e) => updateSfx(parseFloat(e.target.value))}
             disabled={muted}
-            className="w-full accent-primary"
+            className="w-full accent-sky-500"
           />
         </div>
 
-        {/* Music volume — saved for future use */}
+        {/* Music volume */}
         <div className="mb-5 space-y-2">
           <div className="flex items-center justify-between">
-            <label className="font-pixel text-[10px] uppercase">🎵 Volume Musik</label>
-            <span className="font-pixel text-[10px]">{Math.round(music * 100)}%</span>
+            <label className="text-xs font-bold uppercase text-slate-500">🎵 Volume Musik</label>
+            <span className="text-xs font-bold text-slate-600">{Math.round(music * 100)}%</span>
           </div>
           <input
             type="range"
@@ -119,10 +119,10 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
             value={music}
             onChange={(e) => updateMusic(parseFloat(e.target.value))}
             disabled={muted}
-            className="w-full accent-primary"
+            className="w-full accent-sky-500"
           />
-          <p className="font-body text-[10px] text-muted-foreground">
-            🎵 Musik chiptune santai untuk menemanimu menjelajah Derawan.
+          <p className="text-[10px] text-slate-500">
+            🎵 Musik santai untuk menemanimu menjelajah Derawan.
           </p>
         </div>
 
@@ -132,15 +132,15 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
             SFX.click();
             setShowHelp(true);
           }}
-          className="mb-4 w-full rounded border-4 border-foreground bg-secondary py-2.5 font-pixel text-[10px] text-secondary-foreground shadow-pixel active:translate-y-1"
+          className="mb-4 w-full rounded-xl bg-amber-400 py-2.5 text-xs font-bold text-slate-900 shadow-md transition hover:scale-[1.02] active:translate-y-1"
         >
-          📖 LIHAT CARA BERMAIN
+          📖 Lihat Cara Bermain
         </button>
 
         {/* Controls info */}
-        <div className="mb-5 rounded border-4 border-foreground bg-muted p-3">
-          <h3 className="mb-2 font-pixel text-[10px] uppercase">🎯 Cara Main Singkat</h3>
-          <ul className="space-y-1 font-body text-xs text-card-foreground">
+        <div className="mb-5 rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <h3 className="mb-2 text-xs font-bold uppercase text-slate-500">🎯 Cara Main Singkat</h3>
+          <ul className="space-y-1 text-xs text-slate-700">
             <li>💻 <strong>Desktop:</strong> WASD gerak · SPASI serang · E clean wave</li>
             <li>📱 <strong>HP:</strong> Joystick kiri · Tombol kanan untuk serang</li>
             <li>❤️ Jawab <strong>kuis kilat</strong> dengan benar untuk dapat +1 nyawa!</li>
@@ -149,12 +149,12 @@ export function SettingsScreen({ onBack }: SettingsScreenProps) {
 
         <button
           onClick={save}
-          className="pixel-btn w-full rounded border-4 border-foreground bg-primary py-3 font-pixel text-xs text-primary-foreground shadow-pixel active:translate-y-1"
+          className="w-full rounded-xl bg-gradient-to-b from-sky-400 to-sky-600 py-3 text-sm font-bold text-white shadow-lg transition hover:scale-[1.02] active:translate-y-1"
         >
-          ✅ SIMPAN & KEMBALI
+          ✅ Simpan & Kembali
         </button>
 
-        <p className="mt-4 text-center font-body text-[10px] text-muted-foreground">
+        <p className="mt-4 text-center text-[10px] text-slate-400">
           Derawan Island · Game Edukasi Anak SD
         </p>
       </div>
