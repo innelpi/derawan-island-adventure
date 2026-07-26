@@ -97,7 +97,7 @@ export function GameScreen({ stage, onWin, onLose, onMenu, onRestart }: GameScre
       canvas.style.width = c.clientWidth + "px";
       canvas.style.height = c.clientHeight + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.imageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = true;
     };
     resize();
     window.addEventListener("resize", resize);
