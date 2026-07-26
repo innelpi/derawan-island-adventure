@@ -1,350 +1,160 @@
-// Pixel sprite renderer. Sprites are tiny 2D arrays of color codes.
-// Each cell becomes one "pixel" drawn at scale on canvas.
+import heroIdle from "@/assets/hero-idle.png";
+import heroWalk from "@/assets/hero-walk.png";
+import heroAttack from "@/assets/hero-attack.png";
+import enemyGoblin from "@/assets/enemy-goblin.png";
+import enemyBeast from "@/assets/enemy-beast.png";
+import enemyGhostnet from "@/assets/enemy-ghostnet.png";
+import enemyOilslick from "@/assets/enemy-oilslick.png";
+import enemyMicroplastic from "@/assets/enemy-microplastic.png";
+import bossLitterKing from "@/assets/boss-litterking.png";
+import bossNetMaster from "@/assets/boss-netmaster.png";
+import bossPlasticTyrant from "@/assets/boss-plastictyrant.png";
+import coconutTree from "@/assets/coconut-tree.png";
+import bgStage1 from "@/assets/bg-stage1.jpg";
+import bgStage2 from "@/assets/bg-stage2.jpg";
+import bgStage3 from "@/assets/bg-stage3.jpg";
+import { EnemyKind } from "./types";
 
-export type Palette = Record<string, string>;
-export type Sprite = string[]; // each string = one row, each char = one pixel
+// ============================================================
+// Hand-drawn image asset manager
+// Replaces the old pixel sprite arrays with PNG illustrations.
+// ============================================================
 
-// Shared palette keyed by single-char codes
-export const PAL: Palette = {
-  ".": "transparent",
-  // skin / hero
-  s: "#f4c89a",
-  S: "#d99a6c",
-  r: "#e8423a", // shirt red
-  R: "#a82820",
-  b: "#3a4a8a", // shorts blue
-  k: "#1a1a2a", // outline
-  w: "#ffffff",
-  e: "#222233", // eyes
-  y: "#ffd84d", // hat / sun
-  Y: "#e6a82a",
-  n: "#5a3a1a", // hair brown
-  // sea & sand
-  c: "#f6e3b0",
-  C: "#d9b56a",
-  o: "#3fb8e6",
-  O: "#1c6fa8",
-  g: "#3fbf6a", // green coconut
-  G: "#1f7a3a",
-  T: "#6b4a22", // trunk
-  // trash monsters
-  t: "#3a3550",
-  T2: "#5b507a",
-  p: "#7d2db5", // dark energy purple
-  P: "#b96bff",
-  m: "#86bf3a", // slime green
-  M: "#3a8a1f",
-  a: "#9a9a9a", // can grey
-  A: "#5a5a5a",
-  // boss
-  L: "#241830",
-  l: "#3d2a4a",
-  // misc
-  h: "#ff5577", // heart
-  H: "#cc2244",
-  q: "#7adfff", // clean wave
-  Q: "#3a8fcc",
-  f: "#fff2a8", // sparkle
+export interface SpriteAsset {
+  src: string;
+  width: number; // native image width
+  height: number; // native image height
+  drawHeight: number; // desired height in arena pixels
+}
+
+const assets: Record<string, SpriteAsset> = {
+  heroIdle: { src: heroIdle, width: 0, height: 0, drawHeight: 42 },
+  heroWalk: { src: heroWalk, width: 0, height: 0, drawHeight: 42 },
+  heroAttack: { src: heroAttack, width: 0, height: 0, drawHeight: 46 },
+  enemyGoblin: { src: enemyGoblin, width: 0, height: 0, drawHeight: 28 },
+  enemyBeast: { src: enemyBeast, width: 0, height: 0, drawHeight: 36 },
+  enemyGhostnet: { src: enemyGhostnet, width: 0, height: 0, drawHeight: 30 },
+  enemyOilslick: { src: enemyOilslick, width: 0, height: 0, drawHeight: 32 },
+  enemyMicroplastic: { src: enemyMicroplastic, width: 0, height: 0, drawHeight: 24 },
+  bossLitterKing: { src: bossLitterKing, width: 0, height: 0, drawHeight: 90 },
+  bossNetMaster: { src: bossNetMaster, width: 0, height: 0, drawHeight: 90 },
+  bossPlasticTyrant: { src: bossPlasticTyrant, width: 0, height: 0, drawHeight: 95 },
+  coconutTree: { src: coconutTree, width: 0, height: 0, drawHeight: 75 },
+  bgStage1: { src: bgStage1, width: 0, height: 0, drawHeight: 0 },
+  bgStage2: { src: bgStage2, width: 0, height: 0, drawHeight: 0 },
+  bgStage3: { src: bgStage3, width: 0, height: 0, drawHeight: 0 },
 };
 
-// Multi-char support: we'll parse strings using single chars, with fallback for "T2" not used
-// Keep it simple: only single-char codes above.
+const imageCache: Record<string, HTMLImageElement> = {};
+let allLoaded = false;
 
-export function drawSprite(
+function loadImage(key: string, src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      imageCache[key] = img;
+      assets[key].width = img.width;
+      assets[key].height = img.height;
+      resolve(img);
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+export async function preloadSprites(): Promise<void> {
+  if (allLoaded) return;
+  await Promise.all(
+    Object.keys(assets).map((key) => loadImage(key, assets[key].src))
+  );
+  allLoaded = true;
+}
+
+export function isSpritesLoaded(): boolean {
+  return allLoaded;
+}
+
+export function getSprite(key: keyof typeof assets): SpriteAsset & { image: HTMLImageElement | null } {
+  return {
+    ...assets[key],
+    image: imageCache[key] || null,
+  };
+}
+
+const ENEMY_ASSET: Record<EnemyKind, keyof typeof assets> = {
+  goblin: "enemyGoblin",
+  beast: "enemyBeast",
+  ghostnet: "enemyGhostnet",
+  oilslick: "enemyOilslick",
+  microplastic: "enemyMicroplastic",
+  darkjelly: "enemyGhostnet",
+};
+
+const BOSS_ASSET: Record<1 | 2 | 3, keyof typeof assets> = {
+  1: "bossLitterKing",
+  2: "bossNetMaster",
+  3: "bossPlasticTyrant",
+};
+
+export function getEnemyAsset(kind: EnemyKind) {
+  return getSprite(ENEMY_ASSET[kind]);
+}
+
+export function getBossAsset(stage: 1 | 2 | 3) {
+  return getSprite(BOSS_ASSET[stage]);
+}
+
+export function getHeroAsset(pose: "idle" | "walk" | "attack") {
+  return getSprite(pose === "idle" ? "heroIdle" : pose === "walk" ? "heroWalk" : "heroAttack");
+}
+
+export function getBackgroundAsset(stage: 1 | 2 | 3) {
+  return getSprite(stage === 1 ? "bgStage1" : stage === 2 ? "bgStage2" : "bgStage3");
+}
+
+export function getTreeAsset() {
+  return getSprite("coconutTree");
+}
+
+export function drawImageCentered(
   ctx: CanvasRenderingContext2D,
-  sprite: Sprite,
+  asset: SpriteAsset & { image: HTMLImageElement | null },
   x: number,
   y: number,
-  scale = 4,
   flipX = false,
+  options: {
+    opacity?: number;
+    tint?: string;
+    scale?: number;
+    rotation?: number;
+  } = {},
 ) {
+  if (!asset.image) return;
+
+  const ratio = asset.width / asset.height;
+  const h = asset.drawHeight * (options.scale ?? 1);
+  const w = h * ratio;
+
   ctx.save();
-  if (flipX) {
-    ctx.translate(x + sprite[0].length * scale, y);
-    ctx.scale(-1, 1);
-    x = 0;
-    y = 0;
-  } else {
-    ctx.translate(x, y);
-    x = 0;
-    y = 0;
+  ctx.translate(x, y);
+  if (options.rotation) ctx.rotate(options.rotation);
+  if (flipX) ctx.scale(-1, 1);
+  if (options.opacity !== undefined) ctx.globalAlpha = options.opacity;
+  if (options.tint) {
+    ctx.filter = `brightness(1.6) saturate(0.4) drop-shadow(0 0 6px ${options.tint})`;
   }
-  for (let row = 0; row < sprite.length; row++) {
-    const line = sprite[row];
-    for (let col = 0; col < line.length; col++) {
-      const ch = line[col];
-      const color = PAL[ch];
-      if (!color || color === "transparent") continue;
-      ctx.fillStyle = color;
-      ctx.fillRect(col * scale, row * scale, scale, scale);
-    }
-  }
+
+  ctx.drawImage(
+    asset.image,
+    flipX ? -w / 2 : -w / 2,
+    -h + 4,
+    w,
+    h
+  );
+
   ctx.restore();
 }
 
-// =================== HERO SPRITES (16x18) ===================
-// Anak chibi pakai topi pantai kuning, kaos merah
-export const HERO_IDLE: Sprite = [
-  "....yyyyyyyy....",
-  "...yYYYYYYYYy...",
-  "..yYYyyyyyyYYy..",
-  "...nnnnnnnnnn...",
-  "..nssssssssssn..",
-  "..nseessessen...",
-  "..nssssssssss...",
-  "..nsswwwwwwss...",
-  "...sssssssss....",
-  "..rrrrrrrrrrrr..",
-  ".rRrrrrrrrrrrRr.",
-  ".rRrrrrrrrrrrRr.",
-  ".rrrrrrrrrrrrrr.",
-  "..ssrr....rrss..",
-  "..bbbb....bbbb..",
-  "..bbbb....bbbb..",
-  "..bbbb....bbbb..",
-  "..kkk......kkk..",
-];
-
-export const HERO_WALK: Sprite = [
-  "....yyyyyyyy....",
-  "...yYYYYYYYYy...",
-  "..yYYyyyyyyYYy..",
-  "...nnnnnnnnnn...",
-  "..nssssssssssn..",
-  "..nseessessen...",
-  "..nssssssssss...",
-  "..nsswwwwwwss...",
-  "...sssssssss....",
-  "..rrrrrrrrrrrr..",
-  ".rRrrrrrrrrrrRr.",
-  "..rrrrrrrrrrrr..",
-  "..rrrrrrrrrrrr..",
-  "..ssrr....rrss..",
-  ".bbbb......bbbb.",
-  ".bbbb......bbbb.",
-  ".bbb........bbb.",
-  ".kk..........kk.",
-];
-
-export const HERO_ATTACK: Sprite = [
-  "....yyyyyyyy....",
-  "...yYYYYYYYYy...",
-  "..yYYyyyyyyYYy..",
-  "...nnnnnnnnnn...",
-  "..nssssssssssn..",
-  "..nseessessen...",
-  "..nssssssssss...",
-  "..nsswwwwwwss...",
-  "...sssssssss....",
-  "..rrrrrrrrrrrrqq",
-  ".rRrrrrrrrrrrRqq",
-  ".rRrrrrrrrrrrqqq",
-  ".rrrrrrrrrrrrqq.",
-  "..ssrr....rrss..",
-  "..bbbb....bbbb..",
-  "..bbbb....bbbb..",
-  "..bbbb....bbbb..",
-  "..kkk......kkk..",
-];
-
-// =================== TRASH MONSTERS ===================
-// Trash Goblin (12x12) - dari botol & sampah
-export const TRASH_GOBLIN: Sprite = [
-  "....pppp....",
-  "...pPPPPp...",
-  "..pPeewwePp.",
-  "..pPwwwwwwP.",
-  "..pPmmmmmmP.",
-  ".ttttttttttp",
-  ".ta..aa..tap",
-  ".tttaattttp.",
-  ".ttttttttt..",
-  "..tt....tt..",
-  "..kk....kk..",
-  "..k......k..",
-];
-
-// Bottle Beast (14x14) - lebih besar, dari kaleng
-export const BOTTLE_BEAST: Sprite = [
-  "....aaaaaa....",
-  "...aAAAAAAa...",
-  "..aAAeewweAAa.",
-  "..aAwwwwwwwwA.",
-  "..aAmwwwwwwmA.",
-  ".aattttttttaaA",
-  ".aatttaattttaA",
-  ".aaattttttttaa",
-  ".aaaaaaaaaaaa.",
-  "..aaaattaaaa..",
-  "..aaa....aaa..",
-  "..aa......aa..",
-  "..kk......kk..",
-  "..k........k..",
-];
-
-// =================== BOSS — LITTER KING (28x32) ===================
-export const LITTER_KING: Sprite = [
-  ".......pppppppppppppp.......",
-  "......pPPPPPPPPPPPPPPp......",
-  ".....pPLLLLLLLLLLLLLLPp.....",
-  "....pPLLwwwwLLLLwwwwLLPp....",
-  "....pLLwwwweLLLLewwwwLLp....",
-  "....pLLwwwwLLLLLLwwwwLLp....",
-  "....pLLLLLLLLLLLLLLLLLLp....",
-  "....pLLLLLLLLkkkkLLLLLLp....",
-  "....pLLLLLkkkmmmmkkkLLLp....",
-  "....pPLLLLkmmmmmmmkLLLPp....",
-  ".....pPPPLLLLLLLLLLLPPp.....",
-  "...tttttttttttttttttttttt...",
-  "..ttaattmmttaattmmttaattmmt.",
-  ".ttAttttttttaattttttmmttaatt",
-  ".ttttaattmmttttaattmmttttaat",
-  ".ttmmttaattmmttttaattmmttttt",
-  ".tttaattmmttttaattmmttttaatt",
-  ".ttttttaattmmttttaattmmttttt",
-  ".ttmmttttaattmmttttaattmmtt.",
-  "..tttaattmmttttaattmmtttttt.",
-  "...ttttaattmmttttaattmmttt..",
-  "....tttttttttttttttttttt....",
-  "....tt..tttttttttttt..tt....",
-  "....tt...tttttttttt...tt....",
-  "....tt....tttttttt....tt....",
-  "....kk....tttttttt....kk....",
-  "....kk....tt....tt....kk....",
-  "....k.....kk....kk.....k....",
-  "..........kk....kk..........",
-  "..........k......k..........",
-  "............................",
-  "............................",
-];
-
-// =================== ENVIRONMENT ===================
-// Coconut tree (14x20)
-export const COCONUT_TREE: Sprite = [
-  "...gggggGGgg..",
-  "..gGGgggGGGGg.",
-  ".gGGGgggggGGGg",
-  "gGggggGGGgggGG",
-  "gGGggggGGggggG",
-  ".ggggGGggggGg.",
-  "..gggggGGggg..",
-  "...gGGgggGg...",
-  "....gGGgGg....",
-  ".....TTTT.....",
-  ".....TTTT.....",
-  ".....TtTT.....",
-  ".....TTtT.....",
-  ".....TTTT.....",
-  ".....TTtT.....",
-  ".....tTTT.....",
-  ".....TTTT.....",
-  ".....TTtT.....",
-  ".....TTTT.....",
-  "....CCCCCC....",
-];
-
-// Heart (8x7)
-export const HEART_FULL: Sprite = [
-  ".hh..hh.",
-  "hHHhhHHh",
-  "hHHHHHHh",
-  "hHHHHHHh",
-  ".hHHHHh.",
-  "..hHHh..",
-  "...hh...",
-];
-
-export const HEART_EMPTY: Sprite = [
-  ".kk..kk.",
-  "k..kk..k",
-  "k......k",
-  "k......k",
-  ".k....k.",
-  "..k..k..",
-  "...kk...",
-];
-
-// Trash projectile (6x6)
-export const TRASH_PROJ: Sprite = [
-  "..ppp.",
-  ".pPPPp",
-  "ptmmtP",
-  "ptmmtP",
-  ".pPPp.",
-  "..pp..",
-];
-
-// Sparkle (5x5)
-export const SPARKLE: Sprite = [
-  "..f..",
-  ".fff.",
-  "ffwff",
-  ".fff.",
-  "..f..",
-];
-
-// =================== STAGE 2 SPRITES ===================
-// Ghost Net (12x12) — jaring nelayan terbuang, abu-abu kebiruan
-export const GHOST_NET: Sprite = [
-  "..aaaaaaaa..",
-  ".awwwwwwwwa.",
-  ".awwAAwwAAwa",
-  ".awAAwwAAwwa",
-  ".awwAAeewAwa",
-  ".awAAwwAAwwa",
-  ".awwAAwwAAwa",
-  ".awAAwwAAwwa",
-  ".awwwwwwwwa.",
-  "..aaaaaaaa..",
-  "..a......a..",
-  "..k......k..",
-];
-
-// Oil Slick (14x12) — gumpalan oli ungu-hitam mengkilap
-export const OIL_SLICK: Sprite = [
-  "...tttttttt...",
-  "..tppppppppt..",
-  ".tpPPPPPPPPpt.",
-  "tpPPwwwwwPPpt.",
-  "tpPwwppppwwPpt",
-  "tpPweepppewPpt",
-  "tpPwppppppwPpt",
-  "tpPPwwwwwwPpt.",
-  ".tpPPPPPPPpt..",
-  "..tppppppt....",
-  "...tttttt.....",
-  "...kk..kk.....",
-];
-
-// Net Master Boss (28x28) — kapten jaring hantu
-export const NET_MASTER: Sprite = [
-  ".......aaaaaaaaaaaaaa.......",
-  "......awwwwwwwwwwwwwwa......",
-  ".....aAAwwwwwwwwwwAAAAa.....",
-  "....aAAAwwAAwwwwAAwwwAAAa...",
-  "....aAAwwwAAeeAAwwwAAAAAa...",
-  "....aAAwwAAAwwAAAwwAAAAAa...",
-  "....aAAAAwwwwwwwwwwwAAAAa...",
-  ".....aAAAAAAAAAAAAAAAAAa....",
-  ".....aAAAAAAAkkkkAAAAAAa....",
-  "......aAAAkkmmmmmmkkkAa.....",
-  ".......aAkmmmmmmmmmkAa......",
-  "........aAAAAAAAAAAAa.......",
-  "...aaaaaawwwwwwwwwwwaaaa....",
-  "..awwwawwwwwwwwwwwwwawwwa...",
-  ".awwawwawwwwwwwwwwwwawwwwa..",
-  "awwawwwwawwwwwwwwwwwawwwwwa.",
-  "awawwwwwwawwwwwwwwwwawwwwwa.",
-  ".awwwwwwwwawwwwwwwwwawwwwa..",
-  "..awwwwwwwwawwwwwwwwawwwa...",
-  "...awwwwwwwwawwwwwwwawwa....",
-  "....awwwwwwwwawwwwwwawa.....",
-  ".....aaawwwwwwawwwwawa......",
-  "........aawwwwwawwawa.......",
-  "..........aawwwawawa........",
-  "............aawawa..........",
-  ".............aaaa...........",
-  "..............kk............",
-  "..............kk............",
-];
-
+// Keep legacy pixel types for any remaining references (none expected).
+export type Palette = Record<string, string>;
+export type Sprite = string[];
