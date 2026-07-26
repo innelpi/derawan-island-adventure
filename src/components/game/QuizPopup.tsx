@@ -12,12 +12,11 @@ export function QuizPopup({ question, onAnswered, timeLimit = 10 }: QuizPopupPro
   const [reveal, setReveal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(timeLimit);
 
-  // Countdown
   useEffect(() => {
     if (reveal) return;
     if (timeLeft <= 0) {
       setReveal(true);
-      setPicked(-1); // timeout = wrong
+      setPicked(-1);
       return;
     }
     const id = setTimeout(() => setTimeLeft((t) => t - 0.1), 100);
@@ -36,17 +35,17 @@ export function QuizPopup({ question, onAnswered, timeLimit = 10 }: QuizPopupPro
   const close = () => onAnswered(isCorrect);
 
   return (
-    <div className="absolute inset-0 z-40 flex items-center justify-center bg-foreground/80 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md animate-pop-in rounded-md border-4 border-foreground bg-card p-5 shadow-pixel-lg">
+    <div className="absolute inset-0 z-40 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md animate-pop-in rounded-2xl border border-white/30 bg-white p-5 shadow-[0_12px_40px_rgba(0,0,0,0.35)] sm:p-6">
         <div className="mb-3 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-3xl" aria-hidden>{question.emoji}</span>
-            <span className="rounded border-2 border-foreground bg-secondary px-2 py-0.5 font-pixel text-[9px] uppercase text-secondary-foreground sm:text-[10px]">
-              KUIS KILAT!
+            <span className="rounded-full bg-amber-300 px-3 py-1 text-[10px] font-bold uppercase text-slate-900 shadow-sm">
+              Kuis Kilat!
             </span>
           </div>
           {!reveal && (
-            <span className="font-pixel text-xs text-destructive">
+            <span className="text-sm font-bold text-red-500">
               {Math.ceil(timeLeft)}s
             </span>
           )}
@@ -54,15 +53,15 @@ export function QuizPopup({ question, onAnswered, timeLimit = 10 }: QuizPopupPro
 
         {/* Timer bar */}
         {!reveal && (
-          <div className="mb-3 h-2 w-full overflow-hidden rounded-sm border-2 border-foreground bg-foreground/30">
+          <div className="mb-3 h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
             <div
-              className={`h-full transition-all ${pct < 30 ? "bg-destructive animate-flash" : "bg-warning"}`}
+              className={`h-full rounded-full transition-all ${pct < 30 ? "bg-red-500 animate-flash" : "bg-amber-400"}`}
               style={{ width: `${pct}%` }}
             />
           </div>
         )}
 
-        <p className="mb-4 font-body text-sm font-semibold leading-relaxed text-card-foreground sm:text-base">
+        <p className="mb-4 text-base font-semibold leading-relaxed text-slate-800 sm:text-lg">
           {question.question}
         </p>
 
@@ -70,21 +69,22 @@ export function QuizPopup({ question, onAnswered, timeLimit = 10 }: QuizPopupPro
           {question.options.map((opt, i) => {
             const isPicked = picked === i;
             const isAnswer = i === question.correctIndex;
-            let cls =
-              "w-full rounded border-4 border-foreground bg-background px-3 py-2 text-left font-body text-sm transition-all hover:bg-muted active:translate-y-0.5";
+            let base = "w-full rounded-xl border-2 px-3 py-3 text-left text-sm font-medium transition-all active:scale-[0.99] ";
             if (reveal) {
-              if (isAnswer) cls += " bg-success text-white border-foreground";
-              else if (isPicked) cls += " bg-destructive text-white";
-              else cls += " opacity-60";
+              if (isAnswer) base += "border-emerald-400 bg-emerald-50 text-emerald-800";
+              else if (isPicked) base += "border-red-400 bg-red-50 text-red-800";
+              else base += "border-slate-200 bg-slate-50 text-slate-400";
+            } else {
+              base += "border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-sky-300";
             }
             return (
               <button
                 key={i}
                 disabled={reveal}
                 onClick={() => choose(i)}
-                className={cls}
+                className={base}
               >
-                <span className="mr-2 font-pixel text-[10px]">
+                <span className="mr-2 font-bold text-sky-600">
                   {String.fromCharCode(65 + i)}.
                 </span>
                 {opt}
@@ -96,22 +96,22 @@ export function QuizPopup({ question, onAnswered, timeLimit = 10 }: QuizPopupPro
         {reveal && (
           <div className="mt-4 space-y-3">
             <div
-              className={`rounded border-4 border-foreground p-3 ${
-                isCorrect ? "bg-success/20" : "bg-destructive/20"
+              className={`rounded-xl border-2 p-3 ${
+                isCorrect ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"
               }`}
             >
-              <div className="font-pixel text-xs">
-                {isCorrect ? "✨ BENAR! +1 NYAWA ❤️" : picked === -1 ? "⏰ WAKTU HABIS!" : "❌ KURANG TEPAT"}
+              <div className={`text-sm font-bold ${isCorrect ? "text-emerald-700" : "text-red-700"}`}>
+                {isCorrect ? "✨ Benar! +1 Nyawa ❤️" : picked === -1 ? "⏰ Waktu Habis!" : "❌ Kurang Tepat"}
               </div>
-              <p className="mt-1 font-body text-xs text-card-foreground sm:text-sm">
+              <p className="mt-1 text-sm text-slate-700">
                 {question.explanation}
               </p>
             </div>
             <button
               onClick={close}
-              className="pixel-btn w-full rounded border-4 border-foreground bg-primary px-4 py-3 font-pixel text-xs text-primary-foreground shadow-pixel active:translate-y-1"
+              className="w-full rounded-xl bg-gradient-to-b from-sky-400 to-sky-600 px-4 py-3 text-sm font-bold text-white shadow-lg transition-all hover:scale-[1.02] active:translate-y-1"
             >
-              ▶ LANJUT MAIN
+              ▶ Lanjut Main
             </button>
           </div>
         )}
