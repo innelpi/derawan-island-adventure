@@ -1,35 +1,28 @@
-import litterKingImg from "@/assets/litter-king.png";
 import {
-  BOTTLE_BEAST,
-  COCONUT_TREE,
-  GHOST_NET,
-  HERO_ATTACK,
-  HERO_IDLE,
-  HERO_WALK,
-  LITTER_KING,
-  NET_MASTER,
-  OIL_SLICK,
-  PAL,
-  TRASH_GOBLIN,
-  TRASH_PROJ,
-  drawSprite,
+  ARENA_H,
+  ARENA_W,
+  GameState,
+  STAGE_CONFIGS,
+} from "./types";
+import {
+  drawImageCentered,
+  getBackgroundAsset,
+  getBossAsset,
+  getEnemyAsset,
+  getHeroAsset,
+  getTreeAsset,
+  preloadSprites,
 } from "./sprites";
-import { ARENA_H, ARENA_W, GameState, STAGE_CONFIGS } from "./types";
 
-const SCALE = 2; // pixel sprite scale within arena
-
-// Preload Litter King artwork (Stage 1 boss).
-const litterKingHTMLImg: HTMLImageElement = new Image();
-litterKingHTMLImg.src = litterKingImg;
-let litterKingReady = false;
-litterKingHTMLImg.onload = () => { litterKingReady = true; };
+// Start preloading assets as soon as the module is loaded.
+preloadSprites().catch(() => {});
 
 // Pre-computed coconut tree positions for parallax background
 const TREES = [
-  { x: 30, y: 60 },
-  { x: ARENA_W - 50, y: 50 },
-  { x: 80, y: 30 },
-  { x: ARENA_W - 110, y: 35 },
+  { x: 40, y: 70 },
+  { x: ARENA_W - 40, y: 60 },
+  { x: 95, y: 45 },
+  { x: ARENA_W - 100, y: 40 },
 ];
 
 export function renderGame(
@@ -55,9 +48,7 @@ export function renderGame(
     ctx.translate((Math.random() - 0.5) * state.shake * 8, (Math.random() - 0.5) * state.shake * 8);
   }
 
-  if (state.stage === 3) drawBackgroundDeepSea(ctx, state);
-  else if (state.stage === 2) drawBackgroundUnderwater(ctx, state);
-  else drawBackground(ctx, state);
+  drawBackground(ctx, state);
   drawEntities(ctx, state);
   drawForegroundEffects(ctx, state);
 
@@ -65,61 +56,38 @@ export function renderGame(
 }
 
 function drawBackground(ctx: CanvasRenderingContext2D, state: GameState) {
-  // Sky gradient — darkens as pollution rises
-  const pol = state.pollution / 100;
-  const skyTop = state.boss.active ? "#3a2a4a" : interp("#87d8ff", "#5a4a7a", pol);
-  const skyBot = state.boss.active ? "#5a4a7a" : interp("#bde8ff", "#a0a0b8", pol);
-  const grad = ctx.createLinearGradient(0, 0, 0, 110);
-  grad.addColorStop(0, skyTop);
-  grad.addColorStop(1, skyBot);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, ARENA_W, 110);
+  const bg = getBackgroundAsset(state.stage);
 
-  // Sea
-  ctx.fillStyle = interp("#3fb8e6", "#5a6a7a", pol);
-  ctx.fillRect(0, 100, ARENA_W, 30);
-  // sea wave stripes (animated)
-  const t = state.time;
-  ctx.fillStyle = interp("#7adfff", "#8a9aaa", pol);
-  for (let i = 0; i < 8; i++) {
-    const yy = 105 + Math.sin(t * 2 + i) * 1.5;
-    ctx.fillRect(20 + i * 60, yy, 24, 2);
+  if (bg.image) {
+    // Draw full-arena background image
+    ctx.drawImage(bg.image, 0, 0, ARENA_W, ARENA_H);
+  } else {
+    // Fallback while loading
+    ctx.fillStyle = state.stage === 3 ? "#1a0628" : state.stage === 2 ? "#1c6fa8" : "#87d8ff";
+    ctx.fillRect(0, 0, ARENA_W, ARENA_H);
   }
 
-  // Sand
-  const sandGrad = ctx.createLinearGradient(0, 130, 0, ARENA_H);
-  sandGrad.addColorStop(0, interp("#f6e3b0", "#a89a7a", pol));
-  sandGrad.addColorStop(1, interp("#d9b56a", "#7a6a4a", pol));
-  ctx.fillStyle = sandGrad;
-  ctx.fillRect(0, 130, ARENA_W, ARENA_H - 130);
+  // Pollution overlay: darkens & tints the scene
+  const pol = state.pollution / 100;
+  if (pol > 0) {
+    const tint =
+      state.stage === 3 ? "rgba(80, 0, 60, "
+      : state.stage === 2 ? "rgba(30, 20, 50, "
+      : "rgba(40, 30, 50, ";
+    ctx.fillStyle = `${tint}${pol * 0.55})`;
+    ctx.fillRect(0, 0, ARENA_W, ARENA_H);
+  }
 
-  // Pollution bercak hitam pas pollution > 40
-  if (pol > 0.4) {
-    ctx.fillStyle = `rgba(40, 20, 50, ${(pol - 0.4) * 0.7})`;
-    for (let i = 0; i < 6; i++) {
-      const cx = ((i * 89 + Math.floor(t * 5)) % ARENA_W);
-      const cy = 160 + (i * 23) % 80;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, 18, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
+  // Stage 1 trees
+  if (state.stage === 1) {
+    const tree = getTreeAsset();
+    for (const tr of TREES) {
+      drawImageCentered(ctx, tree, tr.x, tr.y, false, { scale: 0.9 });
     }
   }
-
-  // Trees
-  for (const tr of TREES) {
-    drawSprite(ctx, COCONUT_TREE, tr.x, tr.y, 1.5);
-  }
-
-  // Pier (left side decoration)
-  ctx.fillStyle = "#6b4a22";
-  ctx.fillRect(0, 118, 40, 4);
-  ctx.fillRect(4, 122, 4, 10);
-  ctx.fillRect(20, 122, 4, 10);
-  ctx.fillRect(34, 122, 4, 10);
 }
 
 function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
-  // sort by y for fake depth
   type Drawable = { y: number; draw: () => void };
   const items: Drawable[] = [];
 
@@ -127,54 +95,37 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
   if (state.boss.active && !state.boss.defeated) {
     const b = state.boss;
     const intro = b.introTimer > 0;
-    const useImage = state.stage === 1 && litterKingReady;
-    const bossSprite = state.stage === 1 ? LITTER_KING : NET_MASTER;
+    const bossAsset = getBossAsset(state.stage);
     const auraColor =
-      state.stage === 1 ? "rgba(184, 107, 255, 0.4)"
-      : state.stage === 2 ? "rgba(122,223,255,0.4)"
-      : "rgba(255, 80, 220, 0.5)";
+      state.stage === 1 ? "rgba(184, 107, 255, 0.35)"
+      : state.stage === 2 ? "rgba(122, 223, 255, 0.35)"
+      : "rgba(255, 80, 220, 0.4)";
+
     items.push({
       y: b.pos.y - 100,
       draw: () => {
         const wob = Math.sin(state.time * 3) * 2;
-        if (useImage) {
-          // Render Litter King PNG (artwork pixel-art kustom)
-          const targetH = 96; // tinggi tampil di arena
-          const ratio = litterKingHTMLImg.width / litterKingHTMLImg.height;
-          const targetW = targetH * ratio;
-          const sx = b.pos.x - targetW / 2;
-          const sy = b.pos.y - targetH + 8 + wob;
-          ctx.save();
-          (ctx as unknown as { imageSmoothingEnabled: boolean }).imageSmoothingEnabled = false;
-          if (b.hurtTimer > 0) {
-            ctx.filter = "brightness(2.4) saturate(0.4)";
-          }
-          ctx.drawImage(litterKingHTMLImg, sx, sy, targetW, targetH);
-          ctx.restore();
-        } else {
-          const sx = b.pos.x - (bossSprite[0].length * SCALE) / 2;
-          const sy = b.pos.y - bossSprite.length * SCALE + 8 + wob;
-          if (b.hurtTimer > 0) {
-            ctx.globalCompositeOperation = "source-over";
-            drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#ffffff");
-          } else if (state.stage === 3) {
-            // Plastic Tyrant: glow ungu di belakang + sprite biasa
-            ctx.save();
-            ctx.fillStyle = "rgba(255, 60, 220, 0.35)";
-            ctx.beginPath();
-            ctx.arc(b.pos.x, b.pos.y - 8, 38 + Math.sin(state.time * 4) * 4, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.restore();
-            drawSpriteTinted(ctx, bossSprite, sx, sy, SCALE, "#c43cff");
-          } else {
-            drawSprite(ctx, bossSprite, sx, sy, SCALE);
-          }
-        }
+        const x = b.pos.x;
+        const y = b.pos.y + wob;
+
+        // aura / glow
+        ctx.save();
+        ctx.fillStyle = auraColor;
+        ctx.beginPath();
+        ctx.arc(x, y - 10, 42 + Math.sin(state.time * 4) * 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        const tint = b.hurtTimer > 0 ? "#a5f3fc" : undefined;
+        drawImageCentered(ctx, bossAsset, x, y, false, { tint });
+
         if (intro) {
-          ctx.fillStyle = auraColor;
-          ctx.beginPath();
-          ctx.arc(b.pos.x, b.pos.y, 50 + Math.sin(state.time * 10) * 10, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.fillStyle = "rgba(0,0,0,0.55)";
+          ctx.fillRect(0, ARENA_H / 2 - 18, ARENA_W, 36);
+          ctx.fillStyle = state.stage === 2 ? "#7adfff" : state.stage === 3 ? "#ff5cdc" : "#ff5577";
+          ctx.font = "bold 12px 'Fredoka', sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(STAGE_CONFIGS[state.stage].bossName + "!", ARENA_W / 2, ARENA_H / 2 + 4);
         }
       },
     });
@@ -185,25 +136,19 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
     items.push({
       y: e.pos.y,
       draw: () => {
-        const sprite =
-          e.kind === "goblin" ? TRASH_GOBLIN
-          : e.kind === "beast" ? BOTTLE_BEAST
-          : e.kind === "ghostnet" ? GHOST_NET
-          : e.kind === "oilslick" ? OIL_SLICK
-          : e.kind === "microplastic" ? TRASH_GOBLIN  // reuse, dirender lebih kecil
-          : GHOST_NET;                                // darkjelly: reuse ghostnet shape
-        const sx = e.pos.x - (sprite[0].length * SCALE) / 2;
-        const sy = e.pos.y - sprite.length * SCALE + 4;
+        const asset = getEnemyAsset(e.kind);
+        const x = e.pos.x;
+        const y = e.pos.y;
+
         // shadow
-        ctx.fillStyle = "rgba(0,0,0,0.3)";
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
         ctx.beginPath();
-        ctx.ellipse(e.pos.x, e.pos.y + 2, e.size * 0.9, 3, 0, 0, Math.PI * 2);
+        ctx.ellipse(x, y + 2, e.size * 0.9, 3, 0, 0, Math.PI * 2);
         ctx.fill();
-        if (e.hurtTimer > 0) {
-          drawSpriteTinted(ctx, sprite, sx, sy, SCALE, "#ffffff");
-        } else {
-          drawSprite(ctx, sprite, sx, sy, SCALE, e.facing < 0);
-        }
+
+        const scale = e.kind === "microplastic" ? 0.85 : 1;
+        const tint = e.hurtTimer > 0 ? "#ffffff" : undefined;
+        drawImageCentered(ctx, asset, x, y, e.facing < 0, { tint, scale });
       },
     });
   }
@@ -213,23 +158,23 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
   items.push({
     y: h.pos.y,
     draw: () => {
-      ctx.fillStyle = "rgba(0,0,0,0.3)";
+      const x = h.pos.x;
+      const y = h.pos.y;
+
+      // shadow
+      ctx.fillStyle = "rgba(0,0,0,0.25)";
       ctx.beginPath();
-      ctx.ellipse(h.pos.x, h.pos.y + 2, 10, 3, 0, 0, Math.PI * 2);
+      ctx.ellipse(x, y + 2, 10, 3, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      let sprite = HERO_IDLE;
-      if (h.attackTimer > 0.15) sprite = HERO_ATTACK;
-      else if (h.walkAnim > 0 && Math.floor(h.walkAnim) % 2 === 0) sprite = HERO_WALK;
+      let pose: "idle" | "walk" | "attack" = "idle";
+      if (h.attackTimer > 0.15) pose = "attack";
+      else if (h.walkAnim > 0 && Math.floor(h.walkAnim) % 2 === 0) pose = "walk";
 
-      const sx = h.pos.x - (sprite[0].length * SCALE) / 2;
-      const sy = h.pos.y - sprite.length * SCALE + 4;
+      const heroAsset = getHeroAsset(pose);
       const flash = h.invincible > 0 && Math.floor(state.time * 20) % 2 === 0;
-      if (flash) {
-        ctx.globalAlpha = 0.5;
-      }
-      drawSprite(ctx, sprite, sx, sy, SCALE, h.facing < 0);
-      ctx.globalAlpha = 1;
+      const opacity = flash ? 0.5 : 1;
+      drawImageCentered(ctx, heroAsset, x, y, h.facing < 0, { opacity });
     },
   });
 
@@ -238,9 +183,18 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
     items.push({
       y: p.pos.y,
       draw: () => {
-        const sx = p.pos.x - (TRASH_PROJ[0].length * SCALE) / 2;
-        const sy = p.pos.y - (TRASH_PROJ.length * SCALE) / 2;
-        drawSprite(ctx, TRASH_PROJ, sx, sy, SCALE);
+        ctx.save();
+        ctx.translate(p.pos.x, p.pos.y);
+        // trash ball with purple glow
+        ctx.fillStyle = "#3a3550";
+        ctx.beginPath();
+        ctx.arc(0, 0, 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#b96bff";
+        ctx.beginPath();
+        ctx.arc(0, 0, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       },
     });
   }
@@ -250,167 +204,16 @@ function drawEntities(ctx: CanvasRenderingContext2D, state: GameState) {
 }
 
 function drawForegroundEffects(ctx: CanvasRenderingContext2D, state: GameState) {
+  // Particles
   for (const pt of state.particles) {
     const a = Math.max(0, pt.life / pt.maxLife);
     ctx.globalAlpha = a;
     ctx.fillStyle = pt.color;
-    ctx.fillRect(pt.pos.x - pt.size / 2, pt.pos.y - pt.size / 2, pt.size, pt.size);
-  }
-  ctx.globalAlpha = 1;
-
-  // Boss intro text
-  if (state.boss.active && !state.boss.defeated && state.boss.introTimer > 0) {
-    ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.fillRect(0, ARENA_H / 2 - 18, ARENA_W, 36);
-    ctx.fillStyle = state.stage === 2 ? "#7adfff" : state.stage === 3 ? "#ff5cdc" : "#ff5577";
-    ctx.font = "bold 14px 'Press Start 2P', monospace";
-    ctx.textAlign = "center";
-    ctx.fillText(STAGE_CONFIGS[state.stage].bossName + "!", ARENA_W / 2, ARENA_H / 2 + 4);
-  }
-}
-
-function drawBackgroundUnderwater(ctx: CanvasRenderingContext2D, state: GameState) {
-  const pol = state.pollution / 100;
-  // Deep ocean gradient — gets darker / muddier with pollution
-  const top = state.boss.active ? "#0a3a5a" : interp("#1c6fa8", "#1a3a5a", pol);
-  const bot = state.boss.active ? "#031426" : interp("#0a4a78", "#08203a", pol);
-  const grad = ctx.createLinearGradient(0, 0, 0, ARENA_H);
-  grad.addColorStop(0, top);
-  grad.addColorStop(1, bot);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, ARENA_W, ARENA_H);
-
-  // Light shafts from surface
-  const t = state.time;
-  ctx.fillStyle = `rgba(190, 240, 255, ${0.08 - pol * 0.06})`;
-  for (let i = 0; i < 4; i++) {
-    const x = (i * 130 + Math.sin(t * 0.5 + i) * 10) % ARENA_W;
     ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x + 30, 0);
-    ctx.lineTo(x + 60, ARENA_H);
-    ctx.lineTo(x + 10, ARENA_H);
-    ctx.closePath();
+    ctx.arc(pt.pos.x - pt.size / 2, pt.pos.y - pt.size / 2, pt.size / 2, 0, Math.PI * 2);
     ctx.fill();
   }
-
-  // Bubbles
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  for (let i = 0; i < 14; i++) {
-    const bx = (i * 53 + Math.sin(t + i) * 12) % ARENA_W;
-    const by = (ARENA_H - ((t * 18 + i * 31) % ARENA_H));
-    const r = (i % 3) + 1;
-    ctx.beginPath();
-    ctx.arc(bx, by, r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  // Coral reef silhouettes at bottom
-  const coralColors = ["#ff7aa8", "#ffb86b", "#a86bff", "#6bd9ff"];
-  for (let i = 0; i < 8; i++) {
-    const cx = i * 65 + 20;
-    const cy = ARENA_H - 12;
-    ctx.fillStyle = coralColors[i % coralColors.length];
-    ctx.globalAlpha = 0.7 - pol * 0.4;
-    // simple coral blob
-    for (let j = 0; j < 5; j++) {
-      const r = 6 - j;
-      ctx.fillRect(cx - r, cy - j * 3, r * 2, 3);
-    }
-  }
   ctx.globalAlpha = 1;
-
-  // Sea floor
-  ctx.fillStyle = interp("#3a2a18", "#1a1208", pol);
-  ctx.fillRect(0, ARENA_H - 6, ARENA_W, 6);
-
-  // Pollution oil patches floating
-  if (pol > 0.3) {
-    ctx.fillStyle = `rgba(20, 5, 30, ${(pol - 0.3) * 0.7})`;
-    for (let i = 0; i < 5; i++) {
-      const cx = ((i * 97 + Math.floor(t * 6)) % ARENA_W);
-      const cy = 30 + (i * 19) % 60;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, 22, 7, 0, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-}
-
-function drawBackgroundDeepSea(ctx: CanvasRenderingContext2D, state: GameState) {
-  const pol = state.pollution / 100;
-  // Palung gelap — ungu kehitaman
-  const top = state.boss.active ? "#1a0628" : interp("#2a0a4a", "#0a0218", pol);
-  const bot = state.boss.active ? "#04010a" : interp("#0a0218", "#020108", pol);
-  const grad = ctx.createLinearGradient(0, 0, 0, ARENA_H);
-  grad.addColorStop(0, top);
-  grad.addColorStop(1, bot);
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, ARENA_W, ARENA_H);
-
-  const t = state.time;
-
-  // Plankton bercahaya (titik kecil glow)
-  ctx.fillStyle = "rgba(160, 220, 255, 0.7)";
-  for (let i = 0; i < 30; i++) {
-    const px = (i * 31 + Math.sin(t * 0.4 + i) * 8) % ARENA_W;
-    const py = (i * 17 + Math.cos(t * 0.3 + i) * 6) % ARENA_H;
-    const flicker = 0.4 + 0.6 * Math.abs(Math.sin(t * 2 + i));
-    ctx.globalAlpha = flicker * 0.8;
-    ctx.fillRect(px, py, 1, 1);
-  }
-  ctx.globalAlpha = 1;
-
-  // Bayangan makhluk besar lewat di belakang
-  ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
-  const shadowX = ((t * 18) % (ARENA_W + 200)) - 100;
-  ctx.beginPath();
-  ctx.ellipse(shadowX, 50, 60, 14, 0, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Ranjau plastik / chunks melayang
-  ctx.fillStyle = `rgba(60, 20, 80, ${0.5 + pol * 0.3})`;
-  for (let i = 0; i < 6; i++) {
-    const cx = ((i * 79 + Math.floor(t * 4)) % ARENA_W);
-    const cy = 40 + ((i * 27) % 100);
-    ctx.fillRect(cx, cy, 4, 4);
-    ctx.fillRect(cx + 2, cy + 2, 3, 3);
-  }
-
-  // Lantai palung — pixel jagged
-  ctx.fillStyle = interp("#1a0a08", "#080404", pol);
-  ctx.fillRect(0, ARENA_H - 10, ARENA_W, 10);
-  ctx.fillStyle = "#2a1018";
-  for (let i = 0; i < 12; i++) {
-    const x = i * 40 + (i % 2) * 6;
-    ctx.fillRect(x, ARENA_H - 14, 8, 4);
-  }
-
-  // Vent merah glowing di dasar
-  ctx.fillStyle = `rgba(255, 80, 40, ${0.4 + Math.sin(t * 3) * 0.2})`;
-  ctx.fillRect(80, ARENA_H - 12, 4, 4);
-  ctx.fillRect(280, ARENA_H - 14, 4, 6);
-  ctx.fillRect(400, ARENA_H - 12, 4, 4);
-}
-
-function drawSpriteTinted(
-  ctx: CanvasRenderingContext2D,
-  sprite: string[],
-  x: number,
-  y: number,
-  scale: number,
-  tint: string,
-) {
-  for (let row = 0; row < sprite.length; row++) {
-    const line = sprite[row];
-    for (let col = 0; col < line.length; col++) {
-      const ch = line[col];
-      const c = PAL[ch];
-      if (!c || c === "transparent") continue;
-      ctx.fillStyle = tint;
-      ctx.fillRect(x + col * scale, y + row * scale, scale, scale);
-    }
-  }
 }
 
 function interp(a: string, b: string, t: number) {
