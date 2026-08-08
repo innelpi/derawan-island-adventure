@@ -107,10 +107,10 @@ export function QuizPopup({ question, onAnswered, timeLimit = 10 }: QuizPopupPro
 
         {/* Sticky footer */}
         {reveal && (
-          <div className="shrink-0 border-t border-slate-100 bg-white px-4 py-3 sm:px-5">
+          <div className="shrink-0 border-t border-slate-100 bg-slate-50 px-4 py-3 sm:px-5">
             <button
               onClick={() => onAnswered(isCorrect)}
-              className="w-full rounded-2xl bg-gradient-to-b from-sky-400 to-sky-600 px-4 py-3 text-sm font-extrabold text-white shadow-lg transition-all hover:brightness-105 active:translate-y-0.5"
+              className="w-full rounded-2xl bg-gradient-to-b from-sky-500 to-sky-700 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-sky-200 transition-all hover:brightness-105 active:translate-y-0.5"
             >
               ▶ Lanjut Main
             </button>
