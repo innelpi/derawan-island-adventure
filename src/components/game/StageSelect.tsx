@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { SFX } from "@/game/audio";
-import { loadSettings } from "@/game/settings";
+import { loadSettings, saveSettings } from "@/game/settings";
 import type { StageId } from "@/game/types";
 
 interface StageSelectProps {
@@ -8,9 +9,14 @@ interface StageSelectProps {
 }
 
 export function StageSelect({ onPick, onBack }: StageSelectProps) {
-  const settings = loadSettings();
+  const [settings, setSettings] = useState(loadSettings());
   const stage2Locked = !settings.stage2Unlocked;
   const stage3Locked = !settings.stage3Unlocked;
+
+  const unlockAll = () => {
+    SFX.click();
+    setSettings(saveSettings({ stage2Unlocked: true, stage3Unlocked: true }));
+  };
 
   return (
     <div className="relative flex h-full w-full flex-col items-center justify-center gap-6 overflow-y-auto bg-gradient-to-b from-sky-200 to-teal-100 p-6">
@@ -72,9 +78,17 @@ export function StageSelect({ onPick, onBack }: StageSelectProps) {
       </div>
 
       {(stage2Locked || stage3Locked) && (
-        <p className="text-center text-xs text-slate-600">
-          🔒 Selesaikan stage sebelumnya untuk membuka stage berikutnya!
-        </p>
+        <div className="flex flex-col items-center gap-3">
+          <p className="text-center text-xs text-slate-600">
+            🔒 Selesaikan stage sebelumnya untuk membuka stage berikutnya!
+          </p>
+          <button
+            onClick={unlockAll}
+            className="rounded-full bg-white/90 px-4 py-2 text-xs font-extrabold text-amber-700 shadow-md transition hover:-translate-y-0.5 hover:bg-white"
+          >
+            🔓 Buka Semua Stage
+          </button>
+        </div>
       )}
     </div>
   );
