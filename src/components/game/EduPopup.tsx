@@ -23,9 +23,9 @@ export function EduPopup({ fact, onClose }: EduPopupProps) {
         <div className="shrink-0 border-t border-slate-100 bg-slate-50 px-4 py-3 sm:px-5">
           <button
             onClick={onClose}
-            className="w-full rounded-2xl bg-gradient-to-b from-emerald-500 to-emerald-700 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-emerald-200 transition-all hover:brightness-105 active:translate-y-0.5"
+            className="w-full rounded-2xl border-2 border-emerald-700 bg-amber-300 px-4 py-3 text-sm font-extrabold text-slate-900 shadow-lg shadow-emerald-200 transition-all hover:bg-amber-200 active:translate-y-0.5"
           >
-            ▶ Lanjut Main
+            <span className="text-slate-900">▶ Lanjut Main</span>
           </button>
         </div>
       </div>
